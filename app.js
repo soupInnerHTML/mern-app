@@ -8,6 +8,7 @@ const app = express()
 app.use(express.json({ extended: true }))
 
 app.use('/api/auth', require('./routes/auth.routes.js'))
+app.use('/api/todo', require('./routes/todo.routes.js'))
 
 
 async function start() {

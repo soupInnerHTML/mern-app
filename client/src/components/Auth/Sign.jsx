@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function Sign({ setIn, changeHandler, isIn, registerHandler, loading, }) {
+export default function Sign({ setIn, changeHandler, isIn, registerHandler, loginHandler, loading, }) {
     const classes = useStyles();
     const TYPE_OF = "Sign " + (isIn ? "In" : "Up")
 
@@ -71,7 +71,7 @@ export default function Sign({ setIn, changeHandler, isIn, registerHandler, load
                 <Typography component="h1" variant="h5">
                     { TYPE_OF }
                 </Typography>
-                <form className={ classes.form } noValidate onSubmit={ registerHandler }>
+                <form className={ classes.form } noValidate onSubmit={ isIn ? loginHandler : registerHandler }>
                     <Grid container spacing={ 2 }>
                         <Grid item xs={ 12 }>
                             <TextField

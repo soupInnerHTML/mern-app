@@ -1,7 +1,7 @@
-import React from 'react'
-import { Redirect, Route, Switch } from 'react-router-dom'
-import Todos from './components/Todos'
-import Auth from './components/Auth/Auth'
+import React from "react"
+import { Redirect, Route, Switch } from "react-router-dom"
+import Todos from "./components/Todos"
+import Auth from "./components/Auth/Auth"
 
 export const useRoutes = isAuth => {
     if (isAuth) {

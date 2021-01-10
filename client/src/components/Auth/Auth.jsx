@@ -1,11 +1,13 @@
 import { Container } from "@material-ui/core";
 import { useHttp } from "../../hooks/useHttp"
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Sign from "./Sign";
-import Error from "../../common/Error";
+import Error from "../common/Error";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function Auth() {
-    const [isIn, setIn] = useState(false)
+    const auth = useContext(AuthContext)
+    const [isIn, setIn] = useState(true)
     const { loading, error, request, clearError, } = useHttp()
     const [authData, setAuthData] = useState({ password: "", email: "", repeatPassword: "", })
 
@@ -24,8 +26,19 @@ export default function Auth() {
         }
     }
 
+    const loginHandler = async (e) => {
+        e.preventDefault()
+        try {
+            const data = await request("api/auth/login", "POST", authData)
+            auth.login(data.token, data.userId)
+        }
+        catch (e) {
+            // console.log('Toast: ' + error)
+        }
+    }
+
     const signProps = {
-        setIn, changeHandler, isIn, registerHandler, loading,
+        setIn, changeHandler, registerHandler, loginHandler, loading, isIn,
     }
     const errorProps = {
         error, clearError,

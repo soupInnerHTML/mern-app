@@ -70,6 +70,7 @@ router.post(
 
             const { email, password } = req.body
             const user = await User.findOne({ email })
+            console.log(email)
 
             if (!user) {
                 return errorJson(res, 'Пользователь не найден')

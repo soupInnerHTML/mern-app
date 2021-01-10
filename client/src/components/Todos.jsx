@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Fab } from "@material-ui/core";
+import Profile from "./common/Profile";
 import Timeline from "@material-ui/lab/Timeline";
 import TimelineItem from "@material-ui/lab/TimelineItem";
 import TimelineSeparator from "@material-ui/lab/TimelineSeparator";
@@ -72,6 +73,7 @@ export default function Todos() {
     return (
         <Timeline align="alternate" >
             <>
+                <Profile></Profile>
                 {
                     todos.map((todo, i) => {
                         let tailTheme = todos[i + 1]?.theme
@@ -108,6 +110,7 @@ export default function Todos() {
                 <Fab color="secondary" className={ classes.absolute }>
                     <AddIcon />
                 </Fab>
+
             </>
 
         </Timeline >
