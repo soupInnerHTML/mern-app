@@ -2,19 +2,15 @@ import { Container } from "@material-ui/core";
 import { useHttp } from "../../hooks/useHttp"
 import React, { useContext, useState } from "react";
 import Sign from "./Sign";
-import Error from "../common/Error";
+import Error from "../Common/Error";
 import { AuthContext } from "../../context/AuthContext";
+import { useFormChange } from "../../hooks/useFormChange";
 
 export default function Auth() {
     const auth = useContext(AuthContext)
     const [isIn, setIn] = useState(true)
     const { loading, error, request, clearError, } = useHttp()
-    const [authData, setAuthData] = useState({ password: "", email: "", repeatPassword: "", })
-
-    const changeHandler = e => {
-        setAuthData({ ...authData, [e.target.name]: e.target.value, })
-        console.log(e.target.value)
-    }
+    const [authData, changeHandler] = useFormChange({ password: "", email: "", repeatPassword: "", })
 
     const registerHandler = async (e) => {
         e.preventDefault()
@@ -22,7 +18,7 @@ export default function Auth() {
             const data = await request("api/auth/register", "POST", authData)
         }
         catch (e) {
-            // console.log('Toast: ' + error)
+            // console.log()
         }
     }
 
@@ -33,7 +29,7 @@ export default function Auth() {
             auth.login(data.token, data.userId)
         }
         catch (e) {
-            // console.log('Toast: ' + error)
+            // console.log()
         }
     }
 

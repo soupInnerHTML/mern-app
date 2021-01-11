@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Fab } from "@material-ui/core";
-import Profile from "./common/Profile";
+import { IconsContext } from "../../context/IconsContext"
+import Paper from "@material-ui/core/Paper";
+import Profile from "../Common/Profile";
 import Timeline from "@material-ui/lab/Timeline";
 import TimelineItem from "@material-ui/lab/TimelineItem";
 import TimelineSeparator from "@material-ui/lab/TimelineSeparator";
@@ -9,13 +11,9 @@ import TimelineConnector from "@material-ui/lab/TimelineConnector";
 import TimelineContent from "@material-ui/lab/TimelineContent";
 import TimelineOppositeContent from "@material-ui/lab/TimelineOppositeContent";
 import TimelineDot from "@material-ui/lab/TimelineDot";
-import FastfoodIcon from "@material-ui/icons/Fastfood";
-import AddIcon from "@material-ui/icons/Add";
-import LaptopMacIcon from "@material-ui/icons/LaptopMac";
-import HotelIcon from "@material-ui/icons/Hotel";
-import RepeatIcon from "@material-ui/icons/Repeat";
-import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
+import getId from "lodash/uniqueId"
+import ModalAddTodo from "./ModalAddTodo";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -38,37 +36,51 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Todos() {
+    const [ isOpenModal, setOpenModal] = useState(false)
+    console.log(isOpenModal)
+
     const classes = useStyles();
-    let [todos, setTodos] = useState([
+    const icons = useContext(IconsContext)
+
+    
+    const [todos, setTodos] = useState([
         {
+            id: getId(),
             time: "9:30 am",
-            icon: <FastfoodIcon />,
+            icon: "burger",
             label: "Eat",
             desc: "Because you need strength",
         },
         {
+            id: getId(),
             time: "10:00 am",
-            icon: <LaptopMacIcon />,
+            icon: "laptop",
             label: "Code",
             desc: "Because it's awesome!",
             theme: "primary",
         },
         {
+            id: getId(),
             time: "10:30 am",
-            icon: <HotelIcon />,
+            icon: "hotel",
             label: "Sleep",
             desc: "Because you need rest",
             theme: "primary",
             variant: "outlined",
         },
         {
+            id: getId(),
             time: "11:30 am",
-            icon: <RepeatIcon />,
+            icon: "repeat",
             label: "Repeat",
             desc: "Because this is the life you love!",
             theme: "secondary",
         }
     ])
+
+    const addTodo = (data) => {
+        setTodos([...todos, { id: getId(), ...data, }])
+    }
 
     return (
         <Timeline align="alternate" >
@@ -76,11 +88,12 @@ export default function Todos() {
                 <Profile></Profile>
                 {
                     todos.map((todo, i) => {
+
                         let tailTheme = todos[i + 1]?.theme
 
                         return (
 
-                            <TimelineItem>
+                            <TimelineItem key={ todo.id }>
                                 <TimelineOppositeContent>
                                     <Typography variant="body2" color="textSecondary">
                                         { todo.time }
@@ -88,8 +101,8 @@ export default function Todos() {
                                 </TimelineOppositeContent>
 
                                 <TimelineSeparator>
-                                    <TimelineDot color={ todo.theme } variant={ todo.variant }>
-                                        { todo.icon }
+                                    <TimelineDot color={ todo.theme === "disabled" ? undefined : todo.theme } variant={ todo.variant }>
+                                        { icons.todos[todo.icon]() }
                                     </TimelineDot>
                                     { i + 1 < todos.length && <TimelineConnector className={ classes[tailTheme] } /> }
                                 </TimelineSeparator>
@@ -108,8 +121,10 @@ export default function Todos() {
                     })
                 }
                 <Fab color="secondary" className={ classes.absolute }>
-                    <AddIcon />
+                    { icons.add({ onClick: () => setOpenModal(true), }) }
                 </Fab>
+
+                <ModalAddTodo { ...{ isOpenModal, setOpenModal, addTodo, } }></ModalAddTodo>
 
             </>
 
