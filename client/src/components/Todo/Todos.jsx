@@ -33,6 +33,13 @@ const useStyles = makeStyles((theme) => ({
     black: {
         backgroundColor: "#000",
     },
+    addTodo: {
+        width: 56,
+        height: 56,
+        padding: 15,
+        cursor: "pointer",
+        boxSizing: "border-box",
+    },
 }));
 
 export default function Todos() {
@@ -101,7 +108,7 @@ export default function Todos() {
                                 </TimelineOppositeContent>
 
                                 <TimelineSeparator>
-                                    <TimelineDot color={ todo.theme === "disabled" ? undefined : todo.theme } variant={ todo.variant }>
+                                    <TimelineDot color={ todo.theme === "disabled" ? undefined : todo.theme } variant={ !!todo.variant ? "outlined" : undefined }>
                                         { icons.todos[todo.icon]() }
                                     </TimelineDot>
                                     { i + 1 < todos.length && <TimelineConnector className={ classes[tailTheme] } /> }
@@ -121,7 +128,7 @@ export default function Todos() {
                     })
                 }
                 <Fab color="secondary" className={ classes.absolute }>
-                    { icons.add({ onClick: () => setOpenModal(true), }) }
+                    { icons.add({ onClick: () => setOpenModal(true), className: classes.addTodo, }) }
                 </Fab>
 
                 <ModalAddTodo { ...{ isOpenModal, setOpenModal, addTodo, } }></ModalAddTodo>

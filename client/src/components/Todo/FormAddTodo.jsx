@@ -7,23 +7,53 @@ import getId from "lodash/uniqueId"
 import { Button, FormControlLabel, FormHelperText, MenuItem, Select, Switch } from "@material-ui/core";
 import { IconsContext } from "../../context/IconsContext"
 import { useFormChange } from "../../hooks/useFormChange";
+import { format } from "date-fns"
+import { useValidNull } from "../../hooks/useValidNull";
 
 export default function FormAddTodo({ handleClose, addTodo, }) {
     const icons = useContext(IconsContext).todos
     const iconsKeys = Object.keys(icons)
     const [variant, setVariant] = useState(false)
-    const [todoData, changeHandler] = useFormChange({ label: "", icon: iconsKeys[0], desc: "", time: "", theme: "primary", })
-    console.log(todoData)
+
+    const [todoData, changeHandler] = useFormChange({ 
+        label: "", 
+        icon: iconsKeys[0], 
+        desc: "", 
+        time: format(new Date(), "p").toLowerCase(), 
+        theme: "primary", 
+    })
+    console.log(todoData.variant)
 
     const themes = ["primary", "secondary", "disabled", "default"]
 
-    const submitHandler = () => {
-        addTodo(todoData)
-        handleClose()
+    let error = [false, ""]
+
+    // let valid = 
+
+    const submitHandler = (e) => {
+        e.preventDefault()
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        error = useValidNull(todoData.label)
+        if (!error[0]) {
+            addTodo(todoData)
+            handleClose()
+        }
     }
 
     const changeSwitchHandler = (e) => {
         setVariant(!variant)
+        changeHandler(e)
+    }
+
+    const selectHandler = (e) => {
+        if (e.target.value === "default") {
+            setVariant(true)
+        }
+
+        // else {
+        //     setVariant(false)
+        // }
+        
         changeHandler(e)
     }
 
@@ -37,7 +67,9 @@ export default function FormAddTodo({ handleClose, addTodo, }) {
             <Grid container spacing={ 3 }>
                 <Grid item xs={ 12 } sm={ 6 } style={ { marginTop: 15, } }>
                     <TextField
-                        required
+                        // required
+                        error={  error[0] }
+                        helperText={ error[1] }
                         id="label"
                         name="label"
                         label="Label"
@@ -61,7 +93,7 @@ export default function FormAddTodo({ handleClose, addTodo, }) {
                 </Grid>
 
                 <Grid item xs={ 12 } sm={ 6 }>
-                    <Select fullWidth value={ todoData.theme } name="theme" onChange={ changeHandler }>
+                    <Select fullWidth value={ todoData.theme } name="theme" onChange={ selectHandler }>
                         {
                             themes.map(icon => <MenuItem key={ getId() } value={ icon }>{ icon }</MenuItem>)
                         }
@@ -72,7 +104,7 @@ export default function FormAddTodo({ handleClose, addTodo, }) {
 
                 <Grid item xs={ 12 }>
                     <TextField
-                        required
+                        // required
                         id="desc"
                         name="desc"
                         label="Description"
@@ -84,7 +116,7 @@ export default function FormAddTodo({ handleClose, addTodo, }) {
 
                 <Grid item xs={ 12 } sm={ 6 }>
                     <FormControlLabel
-                        control={ <Switch checked={ variant } onChange={ changeSwitchHandler } value={ variant ? undefined : "outlined"  } color="primary" name="variant" /> }
+                        control={ <Switch disabled={ todoData.theme === "default" } checked={ variant } onChange={ changeSwitchHandler } value={ variant && "" } color="primary" name="variant" /> }
                         label={ variant ? "Outlined" : "Default" }
                     />
                 </Grid>
