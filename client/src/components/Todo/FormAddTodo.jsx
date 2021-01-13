@@ -9,11 +9,15 @@ import { IconsContext } from "../../context/IconsContext"
 import { useFormChange } from "../../hooks/useFormChange";
 import { format } from "date-fns"
 import { useValidNull } from "../../hooks/useValidNull";
+import { AuthContext } from "../../context/AuthContext"
+import { useHttp } from "../../hooks/useHttp";
 
 export default function FormAddTodo({ handleClose, addTodo, }) {
     const icons = useContext(IconsContext).todos
-    const iconsKeys = Object.keys(icons)
+    const auth = useContext(AuthContext)
     const [variant, setVariant] = useState(false)
+    const iconsKeys = Object.keys(icons)
+    const { request, } = useHttp()
 
     const [todoData, changeHandler] = useFormChange({ 
         label: "", 
@@ -30,13 +34,28 @@ export default function FormAddTodo({ handleClose, addTodo, }) {
 
     // let valid = 
 
-    const submitHandler = (e) => {
+    const submitHandler = async (e) => {
         e.preventDefault()
         // eslint-disable-next-line react-hooks/rules-of-hooks
-        error = useValidNull(todoData.label)
+        // error = useValidNull(todoData.label)
+        
+        const { userId, token, } = auth
+        
         if (!error[0]) {
             addTodo(todoData)
             handleClose()
+            if (true) {
+                try {
+                    let response = await request("/api/todo/addTodo", "POST", { ...todoData, owner: userId, }, {
+                        Authorization: `Bearer ${token}`,
+                    } )
+
+                    console.log(response)
+                }
+                catch (e) {
+                    
+                }
+            }
         }
     }
 

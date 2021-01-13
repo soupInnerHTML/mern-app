@@ -8,7 +8,10 @@ router.post('/addTodo', auth, async (req, res) => {
     try {
         // const baseUrl = config.get('baseUrl')
         const { body } = req
-        await body.save()
+        const todo = new Todo(body)
+
+        await todo.save()
+
 
         res.status(201).json({ message: body })
     }
@@ -19,7 +22,7 @@ router.post('/addTodo', auth, async (req, res) => {
 
 router.get('/', auth, async (req, res) => {
     try {
-        const todos = await Link.find({ owner: req.user.userId })
+        const todos = await Todo.find({ owner: req.user.userId })
         res.json(todos)
     }
     catch (e) {
@@ -29,7 +32,7 @@ router.get('/', auth, async (req, res) => {
 
 router.get('/:id', auth, async (req, res) => {
     try {
-        const todos = await Link.findById(req.params.id)
+        const todos = await Todo.findById(req.params.id)
         res.json(todos)
     }
     catch (e) {

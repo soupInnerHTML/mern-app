@@ -6,6 +6,7 @@ import HotelIcon from "@material-ui/icons/Hotel";
 import RepeatIcon from "@material-ui/icons/Repeat";
 import FastfoodIcon from "@material-ui/icons/Fastfood";
 import AddIcon from "@material-ui/icons/Add";
+import Delete from "@material-ui/icons/Delete";
 
 import { useRoutes } from "./hooks/useRoutes";
 import { BrowserRouter } from "react-router-dom";
@@ -26,6 +27,7 @@ function App() {
             repeat: props =>  <RepeatIcon  { ...props } />,
         },
         add: props => <AddIcon { ...props } />,
+        delete: props => <Delete { ...props } />,
     }
 
     return (
