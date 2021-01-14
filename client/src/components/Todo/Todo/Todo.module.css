@@ -1,0 +1,39 @@
+.paper {
+  padding: 6px 16px;
+}
+
+.icon {
+  position: absolute !important;
+}
+
+.deleteFromLeft {
+  bottom: 80px !important;
+  right: 24px !important;
+}
+
+.deleteFromRight {
+  bottom: 80px !important;
+  left: 24px !important;
+}
+
+.updateFromLeft {
+  bottom: 80px !important;
+  right: 72px !important;
+}
+
+.updateFromRight {
+  bottom: 80px !important;
+  left: 72px !important;
+}
+
+.moreFromLeft {
+  bottom: 30px !important;
+  right: 24px !important;
+}
+
+.moreFromRight {
+  bottom: 30px !important;
+  left: 24px !important;
+}
+
+/*# sourceMappingURL=Todo.module.css.map */
