@@ -1,6 +1,6 @@
 import React from "react"
 import { Redirect, Route, Switch } from "react-router-dom"
-import Todos from "../components/Todo/Todos"
+import Todos from "../components/Todo/Todos/Todos"
 import Auth from "../components/Auth/Auth"
 
 export const useRoutes = isAuth => {

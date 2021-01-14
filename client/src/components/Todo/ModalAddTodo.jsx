@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
 }));
   
 
-export default function ModalAddTodo({ isOpenModal, setOpenModal, addTodo, }) {
+export default function ModalAddTodo({ isOpenModal, setOpenModal, action, }) {
     // let [open, setOpen] = React.useState(false)
     const classes = useStyles()
     const handleClose = () => setOpenModal(false)
@@ -45,7 +45,7 @@ export default function ModalAddTodo({ isOpenModal, setOpenModal, addTodo, }) {
             >
                 <div className={ classes.paper }>
                     { /* <CloseIcon onClick={ handleClose }></CloseIcon> */ }
-                    <FormAddTodo { ...{ handleClose, addTodo, } }></FormAddTodo>
+                    <FormAddTodo { ...{ handleClose, action, } }/>
                 </div>
             </Modal>
         </>

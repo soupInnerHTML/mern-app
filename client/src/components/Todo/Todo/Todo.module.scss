@@ -1,0 +1,52 @@
+$offset-update-y: 72px;
+$offset-delete-y: 24px;
+$offset-more-y: 24px;
+$offset-delete-update-x: 80px;
+$offset-more-x: 30px;
+
+@mixin right($offset) {
+  right: $offset !important;
+}
+
+@mixin left($offset) {
+  left: $offset !important;
+}
+
+@mixin bottom {
+  bottom: $offset-delete-update-x !important;
+}
+
+@mixin top {
+  bottom: $offset-more-x !important;
+}
+
+.paper {
+  padding: 6px 16px;
+}
+.icon {
+  position: absolute !important;
+}
+.deleteFromLeft {
+  @include bottom;
+  @include right($offset-delete-y);
+}
+.deleteFromRight {
+  @include bottom;
+  @include left($offset-delete-y);
+}
+.updateFromLeft {
+  @include bottom;
+  @include right($offset-update-y);
+}
+.updateFromRight {
+  @include bottom;
+  @include left($offset-update-y);
+}
+.moreFromLeft {
+  @include top;
+  @include right($offset-more-y);
+}
+.moreFromRight {
+  @include top;
+  @include left($offset-more-y);
+}

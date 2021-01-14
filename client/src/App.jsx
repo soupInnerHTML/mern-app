@@ -17,7 +17,7 @@ import { IconsContext } from "./context/IconsContext";
 import CreateIcon from "@material-ui/icons/Create";
 
 function App() {
-    const { login, logout, token, userId, } = useAuth()
+    const { login, logout, token, userId, email, } = useAuth()
     const isAuth = !!token
     const routes = useRoutes(isAuth);
     const icons = {
@@ -29,12 +29,12 @@ function App() {
         },
         add: props => <AddIcon { ...props } />,
         delete: props => <Delete { ...props } />,
-        update: props => <CreateIcon  { ...props }></CreateIcon>,
+        update: props => <CreateIcon  { ...props }/>,
 
     }
 
     return (
-        <AuthContext.Provider value={ { isAuth, login, logout, token, userId, } }>
+        <AuthContext.Provider value={ { isAuth, login, logout, token, userId, email, } }>
             <IconsContext.Provider value={ icons }>
                 <BrowserRouter>
                     <Container>

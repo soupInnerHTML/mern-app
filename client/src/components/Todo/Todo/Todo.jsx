@@ -6,50 +6,37 @@ import TimelineContent from "@material-ui/lab/TimelineContent";
 import TimelineOppositeContent from "@material-ui/lab/TimelineOppositeContent";
 import TimelineDot from "@material-ui/lab/TimelineDot";
 import Paper from "@material-ui/core/Paper";
-import Error from "../Common/Error";
+import Error from "../../Common/Error";
 import cs from "classnames"
+import ModalAddTodo from "../ModalAddTodo";
+import css from "./Todo.module.css"
 import Typography from "@material-ui/core/Typography";
 import { Fab, makeStyles } from "@material-ui/core";
-import { useHttp } from "../../hooks/useHttp";
-import { AuthContext } from "../../context/AuthContext";
-
-const OFFSET_UPDATE_Y = 9
-const OFFSET_DELETE_Y = 3
-const OFFSET_X = 10
+import { useHttp } from "../../../hooks/useHttp";
+import { AuthContext } from "../../../context/AuthContext";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
 
 const useStyles = makeStyles((theme) => ({
-    paper: {
-        padding: "6px 16px",
+    primary: {
+        backgroundColor: theme.palette.primary.main,
     },
-    icon: {
-        position: "absolute",
-        animation: "fadeInBottom",
+    secondary: {
+        backgroundColor: theme.palette.secondary.main,
     },
-    deleteFromLeft: {
-        bottom: theme.spacing(OFFSET_X),
-        right: theme.spacing(OFFSET_DELETE_Y),
-    },
-    deleteFromRight: {
-        bottom: theme.spacing(OFFSET_X),
-        left: theme.spacing(OFFSET_DELETE_Y),
-    },
-    updateFromLeft: {
-        bottom: theme.spacing(OFFSET_X),
-        right: theme.spacing(OFFSET_UPDATE_Y),
-    },
-    updateFromRight: {
-        bottom: theme.spacing(OFFSET_X),
-        left: theme.spacing(OFFSET_UPDATE_Y),
+    interactive: {
+        animation: "slideInUp 1s",
     },
 }));
-
 
 export default function Todo({ todo, todos, icons, order, setTodos, }) {
 
     let tailTheme = todos[order + 1]?.theme
-    const classes = useStyles();
+    const material = useStyles();
     const { request, error, clearError, } = useHttp()
     const auth = useContext(AuthContext)
+    const action = "edit"
+
+    const [ isOpenModal, setOpenModal] = useState(false)
 
     const deleteTodo = async () => {
         try {
@@ -64,13 +51,21 @@ export default function Todo({ todo, todos, icons, order, setTodos, }) {
         catch (e) {
             // console.log(e.message)
         }
-        
+
     }
 
     const [hover, setHover] = useState(false)
 
+    const toggleHover = () => {
+        setHover(!hover)
+    }
+
+    const alternate = (action) => {
+        return order % 2 ? css[action + "FromLeft"] : css[action + "FromRight"]
+    }
+
     return (
-        <TimelineItem onMouseEnter={ () => setHover(true) } onMouseLeave={ () => setHover(false) }>
+        <TimelineItem>
             <TimelineOppositeContent>
                 <Typography variant="body2" color="textSecondary">
                     { todo.time }
@@ -81,11 +76,11 @@ export default function Todo({ todo, todos, icons, order, setTodos, }) {
                 <TimelineDot color={ todo.theme === "disabled" ? undefined : todo.theme } variant={ !!todo.variant ? "outlined" : undefined }>
                     { icons.todos[todo.icon]() }
                 </TimelineDot>
-                { order + 1 < todos.length && <TimelineConnector className={ classes[tailTheme] } /> }
+                { order + 1 < todos.length && <TimelineConnector className={ material[tailTheme] } /> }
             </TimelineSeparator>
 
             <TimelineContent>
-                <Paper elevation={ 3 } className={ classes.paper }>
+                <Paper elevation={ 3 } className={ css.paper }>
                     <Typography variant="h6" component="h1">
                         { todo.label }
                     </Typography>
@@ -94,16 +89,20 @@ export default function Todo({ todo, todos, icons, order, setTodos, }) {
                 </Paper>
             </TimelineContent>
 
-            { true && <>
-                <Fab size="small" color="secondary" className={ cs(order % 2 ? classes.deleteFromLeft : classes.deleteFromRight, classes.icon) }>
+            { hover && <>
+                <Fab size="small" color="secondary" className={ cs(alternate("delete" ), css.icon, material.interactive) }>
                     { icons.delete({ onClick: () => deleteTodo(), }) }
                 </Fab>
-                <Fab size="small" color="primary" className={ cs(order % 2 ? classes.updateFromLeft : classes.updateFromRight, classes.icon) }>
-                    { icons.update({ onClick: () => {}, }) }
+                <Fab size="small" color="primary" className={ cs(alternate("update" ), css.icon, material.interactive) }>
+                    { icons.update({ onClick: () => setOpenModal(true), }) }
                 </Fab>
             </> }
 
-            <Error { ...{ error, clearError, } }></Error>
+            <MoreVertIcon className={ cs(css.icon, alternate("more" )) } onClick={ toggleHover }/>
+
+            <Error { ...{ error, clearError, } }/>
+
+            <ModalAddTodo { ...{ isOpenModal, setOpenModal, action, } }/>
         </TimelineItem>
     )
 }

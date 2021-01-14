@@ -1,45 +1,25 @@
 import React, { useContext, useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Fab } from "@material-ui/core";
-import { IconsContext } from "../../context/IconsContext"
-import { useHttp } from "../../hooks/useHttp";
-import { AuthContext } from "../../context/AuthContext"
+import { IconsContext } from "../../../context/IconsContext"
+import { useHttp } from "../../../hooks/useHttp";
+import { AuthContext } from "../../../context/AuthContext"
 import Timeline from "@material-ui/lab/Timeline";
 import getId from "lodash/uniqueId"
-import ModalAddTodo from "./ModalAddTodo";
-import Profile from "../Common/Profile";
-import Todo from "./Todo";
+import ModalAddTodo from "../ModalAddTodo";
+import Profile from "../../Common/Profile";
+import Todo from "../Todo/Todo";
+import css from "./Todos.module.css"
+import { TodosContext } from "../../../context/TodoContext";
 
-const useStyles = makeStyles((theme) => ({
-    primary: {
-        backgroundColor: theme.palette.primary.main,
-    },
-    secondary: {
-        backgroundColor: theme.palette.secondary.main,
-    },
-    black: {
-        backgroundColor: "#000",
-    },
-    addTodo: {
-        width: 56,
-        height: 56,
-        padding: 15,
-        cursor: "pointer",
-        boxSizing: "border-box",
-    },
-    absolute: {
-        position: "absolute",
-        bottom: theme.spacing(2),
-        right: theme.spacing(3),
-    },
-}));
 
 export default function Todos() {
+    const action = "add"
+
     const [ isOpenModal, setOpenModal] = useState(false)
     const { request, } = useHttp()
-    const auth = useContext(AuthContext)
 
-    const classes = useStyles();
+    const auth = useContext(AuthContext)
     const icons = useContext(IconsContext)
 
     
@@ -78,10 +58,6 @@ export default function Todos() {
         }
     ])
 
-    const addTodo = (data) => {
-        setTodos([...todos, { _id: getId(), ...data, }])
-    }
-
     useEffect(() => {
         (async () => {
             let response = await request("/api/todo", "GET", null,  {
@@ -92,24 +68,22 @@ export default function Todos() {
     }, [])
 
     return (
-        <Timeline align="alternate" >
-            <>
+        <TodosContext.Provider value={ { todos, setTodos, } }>
+            <Timeline align="alternate" className={ css.tree }>
                 <Profile/>
                 {
                     todos.map((todo, order) => {
                         return (
-                            <Todo key={ todo._id } { ...{ todo, classes, todos, icons, order, setTodos, } }/>
+                            <Todo key={ todo._id } { ...{ todo, todos, icons, order, setTodos, } }/>
                         )
                     })
                 }
-                <Fab color="secondary" className={ classes.absolute }>
-                    { icons.add({ onClick: () => setOpenModal(true), className: classes.addTodo, }) }
+                <Fab color="secondary" className={ css.addContainer }>
+                    { icons.add({ onClick: () => setOpenModal(true), className: css.addTodo, }) }
                 </Fab>
 
-                <ModalAddTodo { ...{ isOpenModal, setOpenModal, addTodo, } }/>
-
-            </>
-
-        </Timeline >
+                <ModalAddTodo { ...{ isOpenModal, setOpenModal, action, } }/>
+            </Timeline>
+        </TodosContext.Provider>
     );
 }

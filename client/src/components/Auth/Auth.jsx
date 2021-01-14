@@ -12,10 +12,16 @@ export default function Auth() {
     const { loading, error, request, clearError, } = useHttp()
     const [authData, changeHandler] = useFormChange({ password: "", email: "", repeatPassword: "", })
 
+    const loginReq = async authData => {
+        const data = await request("api/auth/login", "POST", authData)
+        auth.login(data.token, data.userId, data.email)
+    }
+
     const registerHandler = async (e) => {
         e.preventDefault()
         try {
             const data = await request("api/auth/register", "POST", authData)
+            await loginReq(authData)
         }
         catch (e) {
             // console.log()
@@ -25,8 +31,7 @@ export default function Auth() {
     const loginHandler = async (e) => {
         e.preventDefault()
         try {
-            const data = await request("api/auth/login", "POST", authData)
-            auth.login(data.token, data.userId)
+            await loginReq(authData)
         }
         catch (e) {
             // console.log()
@@ -43,8 +48,8 @@ export default function Auth() {
 
     return (
         <Container component="main" maxWidth="xs">
-            <Sign { ...signProps }></Sign>
-            <Error { ...errorProps }></Error>
+            <Sign { ...signProps }/>
+            <Error { ...errorProps }/>
         </Container >
     )
 }

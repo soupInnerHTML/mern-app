@@ -1,38 +1,49 @@
-import React, { useContext, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
+import TextField from "@material-ui/core/TextField";
 import TimePicker from "./TimePicker";
+import Error from "../Common/Error";
 import getId from "lodash/uniqueId"
 import { Button, FormControlLabel, FormHelperText, MenuItem, Select, Switch } from "@material-ui/core";
 import { IconsContext } from "../../context/IconsContext"
 import { useFormChange } from "../../hooks/useFormChange";
 import { format } from "date-fns"
-import { useValidNull } from "../../hooks/useValidNull";
+// import { useValidNull } from "../../hooks/useValidNull";
 import { AuthContext } from "../../context/AuthContext"
+import { TodosContext } from "../../context/TodoContext";
 import { useHttp } from "../../hooks/useHttp";
+import { toCapitalize } from "../../utils/utils";
 
-export default function FormAddTodo({ handleClose, addTodo, }) {
+export default function FormAddTodo({ handleClose, action, }) {
     const icons = useContext(IconsContext).todos
     const auth = useContext(AuthContext)
     const [variant, setVariant] = useState(false)
     const iconsKeys = Object.keys(icons)
-    const { request, } = useHttp()
+    const { request, error, closeError, } = useHttp()
+    const { todos, setTodos, } = useContext(TodosContext)
 
-    const [todoData, changeHandler] = useFormChange({ 
-        label: "", 
-        icon: iconsKeys[0], 
-        desc: "", 
-        time: format(new Date(), "p").toLowerCase(), 
-        theme: "primary", 
+    const addTodo = (data) => {
+        setTodos([...todos, { _id: getId(), ...data, }])
+    }
+
+    const editTodo = (body, id) => {
+        setTodos(todos.map(todo => todo._id === id ? body : todo))
+    }
+
+    const [todoData, changeHandler] = useFormChange({
+        label: "",
+        icon: iconsKeys[0],
+        desc: "",
+        time: format(new Date(), "p").toLowerCase(),
+        theme: "primary",
     })
-    console.log(todoData.variant)
+
+    // console.log(todoData.variant)
 
     const themes = ["primary", "secondary", "disabled", "default"]
 
-    let error = [false, ""]
-
-    // let valid = 
+    let errorCustom = [false, ""]
 
     const submitHandler = async (e) => {
         e.preventDefault()
@@ -41,19 +52,26 @@ export default function FormAddTodo({ handleClose, addTodo, }) {
         
         const { userId, token, } = auth
         
-        if (!error[0]) {
-            addTodo(todoData)
-            handleClose()
+        if (!errorCustom[0]) {
             if (true) {
                 try {
-                    let response = await request("/api/todo/addTodo", "POST", { ...todoData, owner: userId, }, {
-                        Authorization: `Bearer ${token}`,
-                    } )
+                    if (action === "add") {
+                        let response = await request("/api/todo/", "POST", { ...todoData, owner: userId, }, {
+                            Authorization: `Bearer ${token}`,
+                        } )
+                        addTodo(todoData)
+                    }
+                    if (action === "edit") {
+                        let response = await request("/api/todo/" + todos[4]._id, "PUT", { ...todoData, owner: userId, }, {
+                            Authorization: `Bearer ${token}`,
+                        } )
+                        editTodo(todoData, todos[4]._id)
+                    }
+                    handleClose()
 
-                    console.log(response)
+                    // console.log(response)
                 }
                 catch (e) {
-                    
                 }
             }
         }
@@ -80,15 +98,16 @@ export default function FormAddTodo({ handleClose, addTodo, }) {
     return (
         <form onSubmit={ submitHandler }>
             <Typography variant="h6" gutterBottom>
-                Adding TODO
+                { toCapitalize(action) }ing TODO
             </Typography>
 
             <Grid container spacing={ 3 }>
                 <Grid item xs={ 12 } sm={ 6 } style={ { marginTop: 15, } }>
                     <TextField
                         // required
-                        error={  error[0] }
-                        helperText={ error[1] }
+                        // placeholder={}
+                        error={  errorCustom[0] }
+                        helperText={ errorCustom[1] }
                         id="label"
                         name="label"
                         label="Label"
@@ -98,7 +117,7 @@ export default function FormAddTodo({ handleClose, addTodo, }) {
                 </Grid>
 
                 <Grid item xs={ 12 } sm={ 6 }>
-                    <TimePicker { ...{ changeHandler, } }></TimePicker>
+                    <TimePicker { ...{ changeHandler, } }/>
                 </Grid>
                
                 <Grid item xs={ 12 } sm={ 6 }>
@@ -142,13 +161,15 @@ export default function FormAddTodo({ handleClose, addTodo, }) {
 
                 <Grid item xs={ 12 } sm={ 6 }>
                     <Button type="submit" color="secondary">
-                        Add
+                        { action }
                     </Button>
                     
                     <Button onClick={ handleClose }>
                         Cancel
                     </Button>
                 </Grid>
+
+                <Error { ...{ error, closeError, } }/>
             </Grid>
         </form>
     )

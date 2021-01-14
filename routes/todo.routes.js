@@ -4,7 +4,7 @@ const auth = require('../middleware/auth.middleware')
 const config = require('config')
 const router = Router()
 
-router.post('/addTodo', auth, async (req, res) => {
+router.post('/', auth, async (req, res) => {
     try {
         // const baseUrl = config.get('baseUrl')
         const { body } = req
@@ -16,7 +16,7 @@ router.post('/addTodo', auth, async (req, res) => {
         res.status(201).json({ message: body })
     }
     catch (e) {
-        res.status(500).json({ message: e })
+        res.status(500).json({ message: 'Failed to add todo! Please try again' })
     }
 })
 
@@ -56,15 +56,15 @@ router.delete('/:id', auth, async (req, res) => {
 
 router.put('/:id', auth, async (req, res) => {
     try {
-        const {id} = req.params
-        const todos = await Todo.findOneAndDelete({
-            _id: id
-        })
+        const {id, body} = req.params
+        let todo = await Todo.findById(id)
 
-        res.json(todos)
+        todo.update(body)
+
+        res.json(todo)
     }
     catch (e) {
-        res.status(500).json({ message: 'Failed to delete todo! Please, reload page and try again' })
+        res.status(500).json({ message: 'Failed to edit todo! Please, reload page and try again' })
     }
 })
 
