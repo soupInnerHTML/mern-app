@@ -14,6 +14,7 @@ import { Container } from "@material-ui/core";
 import { useAuth } from "./hooks/useAuth";
 import { AuthContext } from "./context/AuthContext";
 import { IconsContext } from "./context/IconsContext";
+import CreateIcon from "@material-ui/icons/Create";
 
 function App() {
     const { login, logout, token, userId, } = useAuth()
@@ -28,6 +29,8 @@ function App() {
         },
         add: props => <AddIcon { ...props } />,
         delete: props => <Delete { ...props } />,
+        update: props => <CreateIcon  { ...props }></CreateIcon>,
+
     }
 
     return (

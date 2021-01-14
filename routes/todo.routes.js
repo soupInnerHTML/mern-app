@@ -40,4 +40,32 @@ router.get('/:id', auth, async (req, res) => {
     }
 })
 
+router.delete('/:id', auth, async (req, res) => {
+    try {
+        const {id} = req.params
+        const todos = await Todo.findOneAndDelete({
+            _id: id
+        })
+
+        res.json(todos)
+    }
+    catch (e) {
+        res.status(500).json({ message: 'Failed to delete todo! Please, reload page and try again' })
+    }
+})
+
+router.put('/:id', auth, async (req, res) => {
+    try {
+        const {id} = req.params
+        const todos = await Todo.findOneAndDelete({
+            _id: id
+        })
+
+        res.json(todos)
+    }
+    catch (e) {
+        res.status(500).json({ message: 'Failed to delete todo! Please, reload page and try again' })
+    }
+})
+
 module.exports = router

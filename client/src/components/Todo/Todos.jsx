@@ -49,7 +49,7 @@ export default function Todos() {
             time: "9:30 am",
             icon: "burger",
             label: "Eat",
-            desc: "Because you need strength",
+            desc: "Because you need strength.",
         },
         {
             _id: getId(),
@@ -79,7 +79,7 @@ export default function Todos() {
     ])
 
     const addTodo = (data) => {
-        setTodos({ _id: getId(), ...data, })
+        setTodos([...todos, { _id: getId(), ...data, }])
     }
 
     useEffect(() => {
@@ -94,11 +94,11 @@ export default function Todos() {
     return (
         <Timeline align="alternate" >
             <>
-                <Profile></Profile>
+                <Profile/>
                 {
-                    todos.map((todo, i) => {
+                    todos.map((todo, order) => {
                         return (
-                            <Todo key={ todo._id } { ...{ todo, classes, todos, icons, i, } }></Todo>
+                            <Todo key={ todo._id } { ...{ todo, classes, todos, icons, order, setTodos, } }/>
                         )
                     })
                 }
@@ -106,7 +106,7 @@ export default function Todos() {
                     { icons.add({ onClick: () => setOpenModal(true), className: classes.addTodo, }) }
                 </Fab>
 
-                <ModalAddTodo { ...{ isOpenModal, setOpenModal, addTodo, } }></ModalAddTodo>
+                <ModalAddTodo { ...{ isOpenModal, setOpenModal, addTodo, } }/>
 
             </>
 
