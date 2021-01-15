@@ -59,7 +59,8 @@ export default function FormAddTodo({ handleClose, action, }) {
                         let response = await request("/api/todo/", "POST", { ...todoData, owner: userId, }, {
                             Authorization: `Bearer ${token}`,
                         } )
-                        addTodo(todoData)
+                        console.log(response)
+                        addTodo(response.message)
                     }
                     if (action === "edit") {
                         let response = await request("/api/todo/" + todos[4]._id, "PUT", { ...todoData, owner: userId, }, {
@@ -106,6 +107,7 @@ export default function FormAddTodo({ handleClose, action, }) {
                     <TextField
                         // required
                         // placeholder={}
+                        value={ todoData.label }
                         error={  errorCustom[0] }
                         helperText={ errorCustom[1] }
                         id="label"
@@ -143,6 +145,7 @@ export default function FormAddTodo({ handleClose, action, }) {
                 <Grid item xs={ 12 }>
                     <TextField
                         // required
+                        value={ todoData.desc }
                         id="desc"
                         name="desc"
                         label="Description"
@@ -153,6 +156,7 @@ export default function FormAddTodo({ handleClose, action, }) {
                 </Grid>
 
                 <Grid item xs={ 12 } sm={ 6 }>
+                    { /*TODO value === state.value*/ }
                     <FormControlLabel
                         control={ <Switch disabled={ todoData.theme === "default" } checked={ variant } onChange={ changeSwitchHandler } value={ variant && "" } color="primary" name="variant" /> }
                         label={ variant ? "Outlined" : "Default" }

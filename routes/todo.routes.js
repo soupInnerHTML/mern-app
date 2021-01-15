@@ -12,8 +12,7 @@ router.post('/', auth, async (req, res) => {
 
         await todo.save()
 
-
-        res.status(201).json({ message: body })
+        res.status(201).json({ message: todo })
     }
     catch (e) {
         res.status(500).json({ message: 'Failed to add todo! Please try again' })
@@ -59,9 +58,7 @@ router.put('/:id', auth, async (req, res) => {
         const {id, body} = req.params
         let todo = await Todo.findById(id)
 
-        todo.update(body)
-
-        res.json(todo)
+        res.json(Todo)
     }
     catch (e) {
         res.status(500).json({ message: 'Failed to edit todo! Please, reload page and try again' })

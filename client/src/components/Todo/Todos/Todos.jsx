@@ -1,22 +1,21 @@
-import React, { useContext, useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Fab } from "@material-ui/core";
 import { IconsContext } from "../../../context/IconsContext"
-import { useHttp } from "../../../hooks/useHttp";
 import { AuthContext } from "../../../context/AuthContext"
+import { TodosContext } from "../../../context/TodoContext";
+import { useHttp } from "../../../hooks/useHttp";
 import Timeline from "@material-ui/lab/Timeline";
-import getId from "lodash/uniqueId"
 import ModalAddTodo from "../ModalAddTodo";
 import Profile from "../../Common/Profile";
 import Todo from "../Todo/Todo";
+import getId from "lodash/uniqueId"
 import css from "./Todos.module.css"
-import { TodosContext } from "../../../context/TodoContext";
 
 
 export default function Todos() {
     const action = "add"
 
-    const [ isOpenModal, setOpenModal] = useState(false)
+    const [isOpenModal, setOpenModal] = useState(false)
     const { request, } = useHttp()
 
     const auth = useContext(AuthContext)
@@ -58,14 +57,19 @@ export default function Todos() {
         }
     ])
 
-    useEffect(() => {
-        (async () => {
+    const getTodos = useCallback(async () => {
+        try {
             let response = await request("/api/todo", "GET", null,  {
                 Authorization: `Bearer ${auth.token}`,
             } )
             await setTodos([...todos, ...response])
-        })()
-    }, [])
+        }
+        catch (e) {
+            
+        }
+    }, [request, auth.token])
+
+    useEffect(() => getTodos(), [getTodos])
 
     return (
         <TodosContext.Provider value={ { todos, setTodos, } }>

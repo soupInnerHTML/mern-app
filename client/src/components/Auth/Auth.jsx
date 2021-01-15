@@ -21,7 +21,7 @@ export default function Auth() {
         e.preventDefault()
         try {
             const data = await request("api/auth/register", "POST", authData)
-            await loginReq(authData)
+            // await loginReq(authData)
         }
         catch (e) {
             // console.log()
@@ -39,7 +39,7 @@ export default function Auth() {
     }
 
     const signProps = {
-        setIn, changeHandler, registerHandler, loginHandler, loading, isIn,
+        setIn, changeHandler, registerHandler, loginHandler, loading, isIn, authData,
     }
     const errorProps = {
         error, clearError,

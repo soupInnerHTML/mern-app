@@ -57,9 +57,9 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function Sign({ setIn, changeHandler, isIn, registerHandler, loginHandler, loading, }) {
+export default function Sign({ setIn, changeHandler, isIn, registerHandler, loginHandler, loading, authData, }) {
     const classes = useStyles();
-    const TYPE_OF = "Sign " + (isIn ? "In" : "Up")
+    const TYPE_OF_SIGN = "Sign " + (isIn ? "In" : "Up")
 
     return (
         <>
@@ -69,12 +69,13 @@ export default function Sign({ setIn, changeHandler, isIn, registerHandler, logi
                     <LockOutlinedIcon />
                 </Avatar>
                 <Typography component="h1" variant="h5">
-                    { TYPE_OF }
+                    { TYPE_OF_SIGN }
                 </Typography>
                 <form className={ classes.form } noValidate onSubmit={ isIn ? loginHandler : registerHandler }>
                     <Grid container spacing={ 2 }>
                         <Grid item xs={ 12 }>
                             <TextField
+                                value={ authData.email }
                                 variant="outlined"
                                 required
                                 fullWidth
@@ -88,6 +89,7 @@ export default function Sign({ setIn, changeHandler, isIn, registerHandler, logi
                         </Grid>
                         <Grid item xs={ 12 }>
                             <TextField
+                                value={ authData.password }
                                 variant="outlined"
                                 required
                                 fullWidth
@@ -101,6 +103,7 @@ export default function Sign({ setIn, changeHandler, isIn, registerHandler, logi
                         </Grid>
                         { !isIn && <Grid item xs={ 12 }>
                             <TextField
+                                value={ authData.repeatPassword }
                                 variant="outlined"
                                 required
                                 fullWidth
@@ -126,7 +129,7 @@ export default function Sign({ setIn, changeHandler, isIn, registerHandler, logi
                         style={ loading ? { opacity: 0.2, } : {} }
                         className={ cs(classes.fade, isIn ? classes.submit : classes.signUp) }
                     >
-                        { TYPE_OF }
+                        { TYPE_OF_SIGN }
                     </Button>
                     <Grid container justify="flex-end">
                         <Grid item>

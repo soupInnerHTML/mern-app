@@ -3,6 +3,7 @@ import { useCallback, useState } from "react"
 
 export const useHttp = () => {
     const [loading, setLoading] = useState(false)
+    const [ready, setReady] = useState(false)
     const [error, setError] = useState(null)
 
     const request = useCallback(async (url, method = "GET", body = null, headers = {}) => {
@@ -25,6 +26,7 @@ export const useHttp = () => {
             }
 
             setLoading(false)
+            setReady(true)
 
             return data
         }
@@ -37,5 +39,5 @@ export const useHttp = () => {
 
     const clearError = setError.bind(0, null)
 
-    return { loading, request, error, clearError, setError, }
+    return { loading, request, error, clearError, setError, ready, }
 }
