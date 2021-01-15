@@ -1,5 +1,5 @@
 import "./App.css";
-import React from "react";
+import React, { useEffect } from "react";
 
 import LaptopMacIcon from "@material-ui/icons/LaptopMac";
 import HotelIcon from "@material-ui/icons/Hotel";
@@ -15,11 +15,24 @@ import { useAuth } from "./hooks/useAuth";
 import { AuthContext } from "./context/AuthContext";
 import { IconsContext } from "./context/IconsContext";
 import CreateIcon from "@material-ui/icons/Create";
+import { Provider, connect } from "react-redux";
+import store from "./redux/store";
+import { getEmail, getIsAuth } from "./redux/selectors";
+import { setEmail, setIsAuth } from "./redux/reducers/authReducer";
 
-function App() {
+function App({ setEmail, setIsAuth, }) {
     const { login, logout, token, userId, email, } = useAuth()
-    const isAuth = !!token
-    const routes = useRoutes(isAuth);
+
+    useEffect(() => {
+        setEmail(email)
+    }, [email])
+
+    // useEffect(() => {
+    //     setIsAuth(!!token)
+    // }, [token])
+
+    // const isAuth = !!token
+    const routes = useRoutes(!!token);
     const icons = {
         todos: {
             laptop: props => <LaptopMacIcon  { ...props } />,
@@ -34,16 +47,21 @@ function App() {
     }
 
     return (
-        <AuthContext.Provider value={ { isAuth, login, logout, token, userId, email, } }>
-            <IconsContext.Provider value={ icons }>
-                <BrowserRouter>
-                    <Container>
-                        { routes }
-                    </Container>
-                </BrowserRouter>
-            </IconsContext.Provider>
-        </AuthContext.Provider>
+        // <AuthContext.Provider value={ { isAuth, login, logout, token, userId, email, } }>
+        <IconsContext.Provider value={ icons }>
+            <Container>
+                { routes }
+            </Container>
+        </IconsContext.Provider>
     );
 }
 
-export default App;
+let mapStateToProps = state => ({
+    email: getEmail(state),
+})
+
+let mapDispatchToProps = {
+    setEmail, setIsAuth,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

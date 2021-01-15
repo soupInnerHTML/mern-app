@@ -15,12 +15,15 @@ export const useAuth = () => {
         }))
     }, [])
 
-    const logout = useCallback(() => {
+    const logout = useCallback((error) => {
         setToken(null)
         setUserId(null)
         setEmail(null)
         
         localStorage.removeItem("storageName")
+        if (error){
+            throw error
+        }
     }, [])
 
     useEffect(() => {

@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function Profile() {
+export default function Profile({ email, }) {
     const material = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const auth = useContext(AuthContext)
@@ -51,7 +51,7 @@ export default function Profile() {
 
     return (
         <div className={ material.root }>
-            <Avatar onClick={ handleClick } className={ material.purple }>{ (auth?.email || [" "])[0].toUpperCase() }</Avatar>
+            <Avatar onClick={ handleClick } className={ material.purple }>{ (email || [" "])[0].toUpperCase() }</Avatar>
 
             <Menu
                 id="simple-menu"
@@ -70,7 +70,7 @@ export default function Profile() {
                 onClose={ handleClose }
                
             >
-                <MenuItem className={ material.sep } >{ auth?.email }</MenuItem>
+                <MenuItem className={ material.sep } >{ email }</MenuItem>
                 <MenuItem onClick={ exitOnClick }>Log out...</MenuItem>
                 <MenuItem>Temp</MenuItem>
                 <MenuItem>Temp</MenuItem>

@@ -6,10 +6,10 @@ import { TodosContext } from "../../../context/TodoContext";
 import { useHttp } from "../../../hooks/useHttp";
 import Timeline from "@material-ui/lab/Timeline";
 import ModalAddTodo from "../ModalAddTodo";
-import Profile from "../../Common/Profile";
 import Todo from "../Todo/Todo";
 import getId from "lodash/uniqueId"
 import css from "./Todos.module.css"
+import ProfileContainer from "../../Common/ProfileContainer";
 
 
 export default function Todos() {
@@ -65,7 +65,14 @@ export default function Todos() {
             await setTodos([...todos, ...response])
         }
         catch (e) {
-            
+            if (e.message === "Нет авторизации") {
+                try {
+                    auth.logout(e.message)
+                }
+                catch (e) {
+                    alert(e)
+                }
+            }
         }
     }, [request, auth.token])
 
@@ -74,7 +81,7 @@ export default function Todos() {
     return (
         <TodosContext.Provider value={ { todos, setTodos, } }>
             <Timeline align="alternate" className={ css.tree }>
-                <Profile/>
+                <ProfileContainer/>
                 {
                     todos.map((todo, order) => {
                         return (

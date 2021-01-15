@@ -6,7 +6,7 @@ import Error from "../Common/Error";
 import { AuthContext } from "../../context/AuthContext";
 import { useFormChange } from "../../hooks/useFormChange";
 
-export default function Auth() {
+export default function Auth({ email, }) {
     const auth = useContext(AuthContext)
     const [isIn, setIn] = useState(true)
     const { loading, error, request, clearError, } = useHttp()
