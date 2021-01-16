@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function Todo({ todo, todos, icons, order, setTodos, setError, isAuth, }) {
+export default function Todo({ todo, todos, icons, order, setTodos, setError, token, deleteTodoTC, }) {
 
     let tailTheme = todos[order + 1]?.theme
     const material = useStyles();
@@ -43,13 +43,7 @@ export default function Todo({ todo, todos, icons, order, setTodos, setError, is
 
     const deleteTodo = async () => {
         try {
-            await request("api/todo/" + todo._id, "DELETE", null,  {
-                Authorization: `Bearer ${isAuth}`,
-            } )
-
-            setTodos(todos.filter(todoToDelete => todoToDelete._id !== todo._id ))
-
-
+            deleteTodoTC(request, token, todo._id)
         }
         catch (e) {
             // console.log(e.message)

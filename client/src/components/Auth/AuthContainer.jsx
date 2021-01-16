@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Auth from "./Auth";
 import { connect } from "react-redux"
-import { loginTC } from "../../redux/reducers/authReducer";
+import { loginTC, registerTC, setIsReady } from "../../redux/reducers/authReducer";
 
 // class AuthContainer extends Component {
 //
@@ -13,11 +13,11 @@ import { loginTC } from "../../redux/reducers/authReducer";
 // }
 
 let mapStateToProps = state => ({
-    // login: getLogin(state),
+
 })
 
 let mapDispatchToProps = {
-    loginTC,
+    loginTC, registerTC, setIsReady,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Auth);

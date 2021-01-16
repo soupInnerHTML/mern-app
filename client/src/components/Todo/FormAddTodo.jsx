@@ -3,31 +3,22 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import TimePicker from "./TimePicker";
-import Error from "../Common/Error";
 import getId from "lodash/uniqueId"
 import { Button, FormControlLabel, FormHelperText, MenuItem, Select, Switch } from "@material-ui/core";
 import { IconsContext } from "../../context/IconsContext"
 import { useFormChange } from "../../hooks/useFormChange";
 import { format } from "date-fns"
-// import { useValidNull } from "../../hooks/useValidNull";
-import { AuthContext } from "../../context/AuthContext"
-import { TodosContext } from "../../context/TodoContext";
 import { useHttp } from "../../hooks/useHttp";
 import { toCapitalize } from "../../utils/utils";
+import { useAuth } from "../../hooks/useAuth";
 
-export default function FormAddTodo({ handleClose, action, }) {
+export default function FormAddTodo({ handleClose, action, setTodos, addTodosTC, }) {
     const icons = useContext(IconsContext).todos
-    const auth = useContext(AuthContext)
     const [variant, setVariant] = useState(false)
     const iconsKeys = Object.keys(icons)
-    const { request, error, closeError, } = useHttp()
-    const { todos, setTodos, } = useContext(TodosContext)
+    const { request, } = useHttp()
 
-    const addTodo = (data) => {
-        setTodos([...todos, { _id: getId(), ...data, }])
-    }
-
-    const editTodo = (body, id) => {
+    const editTodo = (todos, body, id) => {
         setTodos(todos.map(todo => todo._id === id ? body : todo))
     }
 
@@ -39,42 +30,29 @@ export default function FormAddTodo({ handleClose, action, }) {
         theme: "primary",
     })
 
-    // console.log(todoData.variant)
-
     const themes = ["primary", "secondary", "disabled", "default"]
 
-    let errorCustom = [false, ""]
+    const { userId, token, } = useAuth()
 
     const submitHandler = async (e) => {
         e.preventDefault()
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        // error = useValidNull(todoData.label)
-        
-        const { userId, token, } = auth
-        
-        if (!errorCustom[0]) {
-            if (true) {
-                try {
-                    if (action === "add") {
-                        let response = await request("/api/todo/", "POST", { ...todoData, owner: userId, }, {
-                            Authorization: `Bearer ${token}`,
-                        } )
-                        console.log(response)
-                        addTodo(response.message)
-                    }
-                    if (action === "edit") {
-                        let response = await request("/api/todo/" + todos[4]._id, "PUT", { ...todoData, owner: userId, }, {
-                            Authorization: `Bearer ${token}`,
-                        } )
-                        editTodo(todoData, todos[4]._id)
-                    }
-                    handleClose()
 
-                    // console.log(response)
-                }
-                catch (e) {
-                }
+
+        try {
+            if (action === "add") {
+                let response = await addTodosTC(request, token, { ...todoData, owner: userId, })
             }
+            if (action === "edit") {
+                // let response = await request("/api/todo/" + todos[4]._id, "PUT", { ...todoData, owner: userId, }, {
+                //     Authorization: `Bearer ${token}`,
+                // } )
+                // editTodo(todoData, todos[4]._id)
+            }
+            handleClose()
+
+            // console.log(response)
+        }
+        catch (e) {
         }
     }
 
@@ -108,8 +86,8 @@ export default function FormAddTodo({ handleClose, action, }) {
                         // required
                         // placeholder={}
                         value={ todoData.label }
-                        error={  errorCustom[0] }
-                        helperText={ errorCustom[1] }
+                        // error={  errorCustom[0] }
+                        // helperText={ errorCustom[1] }
                         id="label"
                         name="label"
                         label="Label"
@@ -173,7 +151,6 @@ export default function FormAddTodo({ handleClose, action, }) {
                     </Button>
                 </Grid>
 
-                { /*<Error { ...{ error, closeError, } }/>*/ }
             </Grid>
         </form>
     )

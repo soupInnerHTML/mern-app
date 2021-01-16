@@ -1,18 +1,19 @@
 import { useCallback, useEffect, useState } from "react"
-import { setIsAuth } from "../redux/reducers/authReducer";
 
 export const useAuth = () => {
     let [token, setToken] = useState(null)
     let [userId, setUserId] = useState(null)
     let [email, setEmail] = useState(null)
+    let [avatar, setAvatar] = useState(null)
 
-    const login = useCallback((jwtToken, id, email) => {
+    const login = useCallback((jwtToken, id, email, avatar) => {
         setToken(jwtToken)
         setUserId(id)
         setEmail(email)
+        setAvatar(avatar)
 
         localStorage.setItem("storageName", JSON.stringify({
-            userId: id, token: jwtToken, email,
+            userId: id, token: jwtToken, email, avatar,
         }))
     }, [])
 
@@ -20,6 +21,7 @@ export const useAuth = () => {
         setToken(null)
         setUserId(null)
         setEmail(null)
+        setAvatar(null)
         
         localStorage.removeItem("storageName")
         if (error){
@@ -31,9 +33,10 @@ export const useAuth = () => {
         const data = JSON.parse(localStorage.getItem("storageName"))
 
         if (data?.token) {
-            login(data.token, data.userId, data.email)
+            const { token, userId, email, avatar, } = data
+            login(token, userId, email, avatar)
         }
     }, [login])
 
-    return { login, logout, token, userId, email, }
+    return { login, logout, token, userId, email, avatar, }
 }

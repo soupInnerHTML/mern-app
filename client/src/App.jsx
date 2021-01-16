@@ -7,45 +7,27 @@ import RepeatIcon from "@material-ui/icons/Repeat";
 import FastfoodIcon from "@material-ui/icons/Fastfood";
 import AddIcon from "@material-ui/icons/Add";
 import Delete from "@material-ui/icons/Delete";
+import CreateIcon from "@material-ui/icons/Create";
 
+import { IconsContext } from "./context/IconsContext";
 import { useRoutes } from "./hooks/useRoutes";
 import { useAuth } from "./hooks/useAuth";
-import { Container } from "@material-ui/core";
-import { IconsContext } from "./context/IconsContext";
-import CreateIcon from "@material-ui/icons/Create";
+import { CircularProgress, Container } from "@material-ui/core";
 import { connect } from "react-redux";
-import { getEmail, getErrors, getIsAuth } from "./redux/selectors";
-import { setEmail, setIsAuth, setLogin, setLogout } from "./redux/reducers/authReducer";
+import { getErrors, getIsReady, getToken } from "./redux/selectors";
 import { clearError, setError } from "./redux/reducers/errorReducer";
+import { setToken } from "./redux/reducers/authReducer";
 import Error from "./components/Common/Error";
 
-function App({ setEmail, setIsAuth, setLogin, setLogout, isAuth, errors, setError, clearError, }) {
-    const { login, logout, token, userId, email, } = useAuth()
-    console.log(errors)
-
-    //
-    // useEffect(() => {
-    //     setLogin(login)
-    // }, [login])
-    //
-    // useEffect(() => {
-    //     setLogout(logout)
-    // }, [logout])
+function App({ errors, clearError, isReady, globalToken, setToken, }) {
+    const { token, } = useAuth()
 
     useEffect(() => {
-        setEmail(email)
-    }, [email])
-
-    useEffect(() => {
-        setIsAuth(token)
+        setToken(token)
     }, [token])
 
-    useEffect(() => {
-        setEmail(email)
-    }, [])
+    const routes = useRoutes(globalToken);
 
-
-    const routes = useRoutes(isAuth);
     const icons = {
         todos: {
             laptop: props => <LaptopMacIcon  { ...props } />,
@@ -63,6 +45,7 @@ function App({ setEmail, setIsAuth, setLogin, setLogout, isAuth, errors, setErro
         <IconsContext.Provider value={ icons }>
             <Container>
                 { routes }
+                { !isReady && <div className={ "loader" }><CircularProgress /></div> }
                 <Error { ...{ errors, clearError, } }/>
             </Container>
         </IconsContext.Provider>
@@ -70,13 +53,13 @@ function App({ setEmail, setIsAuth, setLogin, setLogout, isAuth, errors, setErro
 }
 
 let mapStateToProps = state => ({
-    email: getEmail(state),
-    isAuth: getIsAuth(state),
     errors: getErrors(state),
+    isReady: getIsReady(state),
+    globalToken: getToken(state),
 })
 
 let mapDispatchToProps = {
-    setEmail, setIsAuth, setLogin, setLogout, setError, clearError,
+    setError, clearError, setToken,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

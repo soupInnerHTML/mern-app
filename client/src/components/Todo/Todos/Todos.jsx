@@ -1,44 +1,32 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { Fab } from "@material-ui/core";
 import { IconsContext } from "../../../context/IconsContext"
-import { AuthContext } from "../../../context/AuthContext"
 import { useHttp } from "../../../hooks/useHttp";
 import Timeline from "@material-ui/lab/Timeline";
 import ModalAddTodo from "../ModalAddTodo";
-import Todo from "../Todo/Todo";
-import getId from "lodash/uniqueId"
 import css from "./Todos.module.css"
 import ProfileContainer from "../../Common/ProfileContainer";
 import TodoContainer from "../Todo/TodoContainer";
+import { useAuth } from "../../../hooks/useAuth";
+import { CircularProgress, Container, Fab } from "@material-ui/core";
 
 
-export default function Todos({ todos, setTodos, getTodosTC, isAuth, }) {
+export default function Todos({ todos, setTodos, getTodosTC, isReady, }) {
     const action = "add"
 
     const [isOpenModal, setOpenModal] = useState(false)
     const { request, } = useHttp()
 
-    const auth = useContext(AuthContext)
+    const { logout, token, } = useAuth()
     const icons = useContext(IconsContext)
 
 
     const getTodos = useCallback(async () => {
-        try {
-            getTodosTC(request, isAuth)
+        if (token) {
+            await getTodosTC(request, token, logout)
         }
-        catch (e) {
-            if (e.message === "Нет авторизации") {
-                try {
-                    auth.logout()
-                }
-                catch (e) {
-                    alert(e)
-                }
-            }
-        }
-    }, [request, isAuth])
+    }, [request, token])
 
-    useEffect(() => getTodos(), [getTodos])
+    useEffect(getTodos, [getTodos])
 
     return (
         <Timeline align="alternate" className={ css.tree }>
@@ -46,7 +34,7 @@ export default function Todos({ todos, setTodos, getTodosTC, isAuth, }) {
             {
                 todos.map((todo, order) => {
                     return (
-                        <TodoContainer key={ todo._id } { ...{ todo, todos, icons, order, setTodos, isAuth, } }/>
+                        <TodoContainer key={ todo._id } { ...{ todo, todos, icons, order, setTodos, token, } }/>
                     )
                 })
             }
@@ -55,6 +43,8 @@ export default function Todos({ todos, setTodos, getTodosTC, isAuth, }) {
             </Fab>
 
             <ModalAddTodo { ...{ isOpenModal, setOpenModal, action, } }/>
+
         </Timeline>
+
     );
 }

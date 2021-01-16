@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { getIsAuth, getTodosData } from "../../../redux/selectors";
+import { getTodosData, getIsReady } from "../../../redux/selectors";
 import { connect } from "react-redux";
 import Todos from "./Todos";
 import { setTodos, getTodosTC } from "../../../redux/reducers/todosReducer";
@@ -16,7 +16,7 @@ import { setTodos, getTodosTC } from "../../../redux/reducers/todosReducer";
 
 let mapStateToProps = state => ({
     todos: getTodosData(state),
-    isAuth: getIsAuth(state),
+    isReady: getIsReady(state),
 })
 
 let mapDispatchToProps = {

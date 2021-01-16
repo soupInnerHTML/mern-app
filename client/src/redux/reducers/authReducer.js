@@ -1,51 +1,59 @@
-import { _ } from "../../utils/utils";
+import { setError } from "./errorReducer";
 
 const SET_EMAIL = "authReducer/setEmail"
-const SET_IS_AUTH = "authReducer/setIsAuth"
-const SET_LOGIN = "authReducer/setLogin"
-const SET_LOGOUT = "authReducer/setLogout"
+const SET_TOKEN = "authReducer/setToken"
+const SET_IS_READY = "authReducer/setIsReady"
 
 export const setEmail = (email) => ({
     type: SET_EMAIL,
     email,
 })
-export const setIsAuth = (flag) => ({
-    type: SET_IS_AUTH,
+export const setToken = (token) => ({
+    type: SET_TOKEN,
+    token,
+})
+export const setIsReady = (flag) => ({
+    type: SET_IS_READY,
     flag,
-})
-export const setLogin = (login) => ({
-    type: SET_LOGIN,
-    login,
-})
-export const setLogout = (logout) => ({
-    type: SET_LOGOUT,
-    logout,
 })
 
 export const loginTC = (request, authData, login) => async dispatch => {
-    const data = await request("api/auth/login", "POST", authData)
-    login(data.token, data.userId, data.email)
-    dispatch(setIsAuth(true))
-    dispatch(setEmail(data.email))
+    try {
+        const data = await request("api/auth/login", "POST", authData)
+        const { token, userId, email, avatar, } = data
+        login(token, userId, email, avatar)
+        dispatch(setToken(token))
+        dispatch(setEmail(email))
+    }
+    catch (e) {
+        dispatch(setError((e.message)))
+    }
+}
+
+export const registerTC = (request, authData, login) => async dispatch => {
+    try {
+        const data = await request("api/auth/register", "POST", authData)
+        dispatch(loginTC(request, authData, login))
+    }
+    catch (e) {
+        dispatch(setError((e.message)))
+    }
 }
 
 const initialState = {
-    // login: _,
-    // logout: _,
     email: null,
-    isAuth: false,
+    jwtToken: null,
+    isReady: false,
 }
 
 const authReducer = (state = initialState, action) => {
     switch (action.type) {
         case SET_EMAIL:
             return { ...state, email: action.email, }
-        case SET_IS_AUTH:
-            return { ...state, isAuth: action.flag, }
-        case SET_LOGIN:
-            return { ...state, login: action.login, }
-        case SET_LOGOUT:
-            return { ...state, logout: action.logout, }
+        case SET_TOKEN:
+            return { ...state, jwtToken: action.token, }
+        case SET_IS_READY:
+            return { ...state, isReady: action.flag, }
         default:
             return state
     }

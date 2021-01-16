@@ -1,50 +1,43 @@
 import { Container } from "@material-ui/core";
 import { useHttp } from "../../hooks/useHttp"
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sign from "./Sign";
 import Error from "../Common/Error";
 import { useFormChange } from "../../hooks/useFormChange";
 import { useAuth } from "../../hooks/useAuth";
+import sample from "lodash/sample"
 
-export default function Auth({ email, loginTC, }) {
+export default function Auth({ loginTC, registerTC, setIsReady, }) {
     const [isIn, setIn] = useState(true)
     const { login, } = useAuth()
     const { loading, error, request, clearError, } = useHttp()
     const [authData, changeHandler] = useFormChange({ password: "", email: "", repeatPassword: "", })
+    const colors = ["orange", "purple", "pink", "green"]
+
+    useEffect(() => {
+        setIsReady(true)
+        console.log(sample(colors))
+    }, [])
 
 
     const registerHandler = async (e) => {
         e.preventDefault()
-        try {
-            const data = await request("api/auth/register", "POST", authData)
-            // await loginReq(authData)
-        }
-        catch (e) {
-        }
+        registerTC(request, { ...authData, avatar: sample(colors), }, login)
     }
 
     const loginHandler = async (e) => {
         e.preventDefault()
-        try {
-            loginTC(request, authData, login)
-        }
-        catch (e) {
-            console.log(e)
-        }
+        loginTC(request, authData, login)
     }
 
     const signProps = {
         setIn, changeHandler, registerHandler, loginHandler, loading, isIn, authData,
-    }
-    const errorProps = {
-        error, clearError,
     }
 
 
     return (
         <Container component="main" maxWidth="xs">
             <Sign { ...signProps }/>
-            { /*<Error { ...errorProps }/>*/ }
         </Container >
     )
 }

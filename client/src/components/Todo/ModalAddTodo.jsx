@@ -1,7 +1,6 @@
 import React from "react"
-import CloseIcon from "@material-ui/icons/Close";
 import { makeStyles, Modal } from "@material-ui/core"
-import FormAddTodo from "./FormAddTodo";
+import FormAddTodoContainer from "./FormAddTodoContainer";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -32,7 +31,6 @@ const useStyles = makeStyles((theme) => ({
   
 
 export default function ModalAddTodo({ isOpenModal, setOpenModal, action, }) {
-    // let [open, setOpen] = React.useState(false)
     const classes = useStyles()
     const handleClose = () => setOpenModal(false)
     
@@ -44,8 +42,7 @@ export default function ModalAddTodo({ isOpenModal, setOpenModal, action, }) {
                 onClose={ handleClose }
             >
                 <div className={ classes.paper }>
-                    { /* <CloseIcon onClick={ handleClose }></CloseIcon> */ }
-                    <FormAddTodo { ...{ handleClose, action, } }/>
+                    <FormAddTodoContainer { ...{ handleClose, action, } }/>
                 </div>
             </Modal>
         </>

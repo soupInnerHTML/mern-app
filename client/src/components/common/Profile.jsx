@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useAuth } from "../../hooks/useAuth";
-import { deepOrange, deepPurple } from "@material-ui/core/colors";
+import { deepOrange, deepPurple, green, pink } from "@material-ui/core/colors";
 import Avatar from "@material-ui/core/Avatar";
 import MenuItem from "@material-ui/core/MenuItem";
+import Divider from "@material-ui/core/Divider";
 import Menu from "@material-ui/core/Menu";
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -24,17 +26,21 @@ const useStyles = makeStyles((theme) => ({
     purple: {
         color: theme.palette.getContrastText(deepPurple[500]),
         backgroundColor: deepPurple[500],
-        cursor: "pointer",
     },
-    sep: {
-        borderBottom: "1px solid rgba(0,0,0, .05)",
+    pink: {
+        color: theme.palette.getContrastText(pink[500]),
+        backgroundColor: pink[500],
+    },
+    green: {
+        color: theme.palette.getContrastText(green[500]),
+        backgroundColor: green[500],
     },
 }));
 
-export default function Profile({ email, setIsAuth, }) {
+export default function Profile({ setToken, }) {
     const material = useStyles();
     const [anchorEl, setAnchorEl] = useState(null);
-    const { logout, } = useAuth()
+    const { logout, email, avatar, } = useAuth()
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -47,12 +53,12 @@ export default function Profile({ email, setIsAuth, }) {
     const exitOnClick = () => {
         handleClose();
         logout()
-        setIsAuth(false)
+        setToken(null)
     }
 
     return (
         <div className={ material.root }>
-            <Avatar onClick={ handleClick } className={ material.purple }>{ (email || [" "])[0].toUpperCase() }</Avatar>
+            <Avatar onClick={ handleClick } style={ { cursor: "pointer", } } className={ material[avatar] }>{ (email || [" "])[0].toUpperCase() }</Avatar>
 
             <Menu
                 id="simple-menu"
@@ -71,7 +77,8 @@ export default function Profile({ email, setIsAuth, }) {
                 onClose={ handleClose }
                
             >
-                <MenuItem className={ material.sep } >{ email }</MenuItem>
+                <MenuItem>{ email }</MenuItem>
+                <Divider style={ { opacity: 0.5, } } />
                 <MenuItem onClick={ exitOnClick }>Log out...</MenuItem>
                 <MenuItem>Temp</MenuItem>
                 <MenuItem>Temp</MenuItem>

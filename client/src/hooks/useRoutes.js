@@ -3,8 +3,8 @@ import { Redirect, Route, Switch } from "react-router-dom"
 import AuthContainer from "../components/Auth/AuthContainer";
 import TodosContainer from "../components/Todo/Todos/TodosContainer";
 
-export const useRoutes = isAuth => {
-    if (isAuth) {
+export const useRoutes = token => {
+    if (token) {
         return (
             <Switch>
                 <Route path="/" exact>

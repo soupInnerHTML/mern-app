@@ -29,7 +29,7 @@ router.post(
 
 
 
-            const { email, password, repeatPassword } = req.body
+            const { email, password, repeatPassword, avatar } = req.body
             const candidate = await User.findOne({ email }) //Поиск email по бд
 
             if (candidate) {
@@ -40,7 +40,7 @@ router.post(
             }
             else {
                 const hashedPassword = await bcrypt.hash(password, 12) // пароль и сложность
-                const user = new User({ email, password: hashedPassword })
+                const user = new User({ email, avatar, password: hashedPassword })
 
                 await user.save()
 
@@ -88,7 +88,7 @@ router.post(
                 { expiresIn: '1h' }
             )
 
-            res.json({ token, userId: user.id, email: user.email })
+            res.json({ token, userId: user.id, email: user.email, avatar: user.avatar })
 
         }
         catch (e) {
