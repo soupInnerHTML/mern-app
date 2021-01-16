@@ -1,22 +1,23 @@
 import React, { Component } from "react";
 import Auth from "./Auth";
 import { connect } from "react-redux"
-import { getEmail } from "../../redux/selectors";
+import { loginTC } from "../../redux/reducers/authReducer";
 
-class AuthContainer extends Component {
-    render() {
-        return (
-            <Auth></Auth>
-        );
-    }
-}
+// class AuthContainer extends Component {
+//
+//     render() {
+//         return (
+//             <Auth></Auth>
+//         );
+//     }
+// }
 
 let mapStateToProps = state => ({
-    email: getEmail(state),
+    // login: getLogin(state),
 })
 
 let mapDispatchToProps = {
-
+    loginTC,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AuthContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(Auth);

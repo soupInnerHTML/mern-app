@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Profile from "./Profile";
 import { connect } from "react-redux"
 import { getEmail } from "../../redux/selectors";
-import { setEmail } from "../../redux/reducers/authReducer";
+import { setEmail, setIsAuth } from "../../redux/reducers/authReducer";
 
 // class ProfileContainer extends Component {
 //     render() {
@@ -17,7 +17,7 @@ let mapStateToProps = state => ({
 })
 
 let mapDispatchToProps = {
-    setEmail,
+    setEmail, setIsAuth,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);

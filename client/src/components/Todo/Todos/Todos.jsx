@@ -2,7 +2,6 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Fab } from "@material-ui/core";
 import { IconsContext } from "../../../context/IconsContext"
 import { AuthContext } from "../../../context/AuthContext"
-import { TodosContext } from "../../../context/TodoContext";
 import { useHttp } from "../../../hooks/useHttp";
 import Timeline from "@material-ui/lab/Timeline";
 import ModalAddTodo from "../ModalAddTodo";
@@ -10,9 +9,10 @@ import Todo from "../Todo/Todo";
 import getId from "lodash/uniqueId"
 import css from "./Todos.module.css"
 import ProfileContainer from "../../Common/ProfileContainer";
+import TodoContainer from "../Todo/TodoContainer";
 
 
-export default function Todos() {
+export default function Todos({ todos, setTodos, getTodosTC, isAuth, }) {
     const action = "add"
 
     const [isOpenModal, setOpenModal] = useState(false)
@@ -21,80 +21,40 @@ export default function Todos() {
     const auth = useContext(AuthContext)
     const icons = useContext(IconsContext)
 
-    
-    const [todos, setTodos] = useState([
-        {
-            _id: getId(),
-            time: "9:30 am",
-            icon: "burger",
-            label: "Eat",
-            desc: "Because you need strength.",
-        },
-        {
-            _id: getId(),
-            time: "10:00 am",
-            icon: "laptop",
-            label: "Code",
-            desc: "Because it's awesome!",
-            theme: "primary",
-        },
-        {
-            _id: getId(),
-            time: "10:30 am",
-            icon: "hotel",
-            theme: "primary",
-            label: "Sleep",
-            desc: "Because you need rest",
-            variant: "outlined",
-        },
-        {
-            _id: getId(),
-            time: "11:30 am",
-            icon: "repeat",
-            label: "Repeat",
-            desc: "Because this is the life you love!",
-            theme: "secondary",
-        }
-    ])
 
     const getTodos = useCallback(async () => {
         try {
-            let response = await request("/api/todo", "GET", null,  {
-                Authorization: `Bearer ${auth.token}`,
-            } )
-            await setTodos([...todos, ...response])
+            getTodosTC(request, isAuth)
         }
         catch (e) {
             if (e.message === "Нет авторизации") {
                 try {
-                    auth.logout(e.message)
+                    auth.logout()
                 }
                 catch (e) {
                     alert(e)
                 }
             }
         }
-    }, [request, auth.token])
+    }, [request, isAuth])
 
     useEffect(() => getTodos(), [getTodos])
 
     return (
-        <TodosContext.Provider value={ { todos, setTodos, } }>
-            <Timeline align="alternate" className={ css.tree }>
-                <ProfileContainer/>
-                {
-                    todos.map((todo, order) => {
-                        return (
-                            <Todo key={ todo._id } { ...{ todo, todos, icons, order, setTodos, } }/>
-                        )
-                    })
-                }
-                <Fab color="secondary" className={ css.addContainer }>
-                    { icons.add({ onClick: () => setOpenModal(true), className: css.addTodo, }) }
-                </Fab>
+        <Timeline align="alternate" className={ css.tree }>
+            <ProfileContainer/>
+            {
+                todos.map((todo, order) => {
+                    return (
+                        <TodoContainer key={ todo._id } { ...{ todo, todos, icons, order, setTodos, isAuth, } }/>
+                    )
+                })
+            }
+            <Fab color="secondary" className={ css.addContainer }>
+                { icons.add({ onClick: () => setOpenModal(true), className: css.addTodo, }) }
+            </Fab>
 
-                <ModalAddTodo { ...{ isOpenModal, setOpenModal, action, } }/>
-            </Timeline>
-        </TodosContext.Provider>
+            <ModalAddTodo { ...{ isOpenModal, setOpenModal, action, } }/>
+        </Timeline>
     );
 }

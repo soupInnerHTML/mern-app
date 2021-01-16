@@ -37,7 +37,5 @@ export const useHttp = () => {
         }
     }, [])
 
-    const clearError = setError.bind(0, null)
-
-    return { loading, request, error, clearError, setError, ready, }
+    return { loading, request, error, setError, ready, }
 }

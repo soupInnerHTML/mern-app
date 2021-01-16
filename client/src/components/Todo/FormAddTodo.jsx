@@ -173,7 +173,7 @@ export default function FormAddTodo({ handleClose, action, }) {
                     </Button>
                 </Grid>
 
-                <Error { ...{ error, closeError, } }/>
+                { /*<Error { ...{ error, closeError, } }/>*/ }
             </Grid>
         </form>
     )

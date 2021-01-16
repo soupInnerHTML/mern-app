@@ -1,10 +1,10 @@
-import React, { useContext } from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Avatar from "@material-ui/core/Avatar";
+import { useAuth } from "../../hooks/useAuth";
 import { deepOrange, deepPurple } from "@material-ui/core/colors";
-import Menu from "@material-ui/core/Menu";
+import Avatar from "@material-ui/core/Avatar";
 import MenuItem from "@material-ui/core/MenuItem";
-import { AuthContext } from "../../context/AuthContext";
+import Menu from "@material-ui/core/Menu";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -31,10 +31,10 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function Profile({ email, }) {
+export default function Profile({ email, setIsAuth, }) {
     const material = useStyles();
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const auth = useContext(AuthContext)
+    const [anchorEl, setAnchorEl] = useState(null);
+    const { logout, } = useAuth()
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -46,7 +46,8 @@ export default function Profile({ email, }) {
 
     const exitOnClick = () => {
         handleClose();
-        auth.logout()
+        logout()
+        setIsAuth(false)
     }
 
     return (

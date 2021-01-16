@@ -1,17 +1,17 @@
 import React from "react"
 import { Redirect, Route, Switch } from "react-router-dom"
-import Todos from "../components/Todo/Todos/Todos"
-import Auth from "../components/Auth/Auth"
+import AuthContainer from "../components/Auth/AuthContainer";
+import TodosContainer from "../components/Todo/Todos/TodosContainer";
 
 export const useRoutes = isAuth => {
     if (isAuth) {
         return (
             <Switch>
                 <Route path="/" exact>
-                    <Todos></Todos>
+                    <TodosContainer/>
                 </Route>
 
-                <Redirect to="/"></Redirect>
+                <Redirect to="/" />
             </Switch>
         )
     }
@@ -19,10 +19,10 @@ export const useRoutes = isAuth => {
     return (
         <Switch>
             <Route path="/auth" exact>
-                <Auth></Auth>
+                <AuthContainer/>
             </Route>
 
-            <Redirect to="/auth"></Redirect>
+            <Redirect to="/auth" />
         </Switch>
     )
 }

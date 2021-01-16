@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react"
+import { setIsAuth } from "../redux/reducers/authReducer";
 
 export const useAuth = () => {
     let [token, setToken] = useState(null)

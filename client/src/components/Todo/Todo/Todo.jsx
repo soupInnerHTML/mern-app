@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import TimelineItem from "@material-ui/lab/TimelineItem";
 import TimelineSeparator from "@material-ui/lab/TimelineSeparator";
 import TimelineConnector from "@material-ui/lab/TimelineConnector";
@@ -6,7 +6,6 @@ import TimelineContent from "@material-ui/lab/TimelineContent";
 import TimelineOppositeContent from "@material-ui/lab/TimelineOppositeContent";
 import TimelineDot from "@material-ui/lab/TimelineDot";
 import Paper from "@material-ui/core/Paper";
-import Error from "../../Common/Error";
 import cs from "classnames"
 import ModalAddTodo from "../ModalAddTodo";
 import css from "./Todo.module.css"
@@ -28,20 +27,24 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function Todo({ todo, todos, icons, order, setTodos, }) {
+export default function Todo({ todo, todos, icons, order, setTodos, setError, isAuth, }) {
 
     let tailTheme = todos[order + 1]?.theme
     const material = useStyles();
-    const { request, error, clearError, } = useHttp()
+    const { request, error, } = useHttp()
     const auth = useContext(AuthContext)
     const action = "edit"
+
+    useEffect(() => {
+        setError(error)
+    }, [error])
 
     const [ isOpenModal, setOpenModal] = useState(false)
 
     const deleteTodo = async () => {
         try {
             await request("api/todo/" + todo._id, "DELETE", null,  {
-                Authorization: `Bearer ${auth.token}`,
+                Authorization: `Bearer ${isAuth}`,
             } )
 
             setTodos(todos.filter(todoToDelete => todoToDelete._id !== todo._id ))
@@ -99,8 +102,6 @@ export default function Todo({ todo, todos, icons, order, setTodos, }) {
             </> }
 
             <MoreVertIcon className={ cs(css.icon, alternate("more" )) } onClick={ toggleHover }/>
-
-            <Error { ...{ error, clearError, } }/>
 
             <ModalAddTodo { ...{ isOpenModal, setOpenModal, action, } }/>
         </TimelineItem>

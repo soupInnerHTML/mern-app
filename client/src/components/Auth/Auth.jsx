@@ -1,21 +1,17 @@
 import { Container } from "@material-ui/core";
 import { useHttp } from "../../hooks/useHttp"
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import Sign from "./Sign";
 import Error from "../Common/Error";
-import { AuthContext } from "../../context/AuthContext";
 import { useFormChange } from "../../hooks/useFormChange";
+import { useAuth } from "../../hooks/useAuth";
 
-export default function Auth({ email, }) {
-    const auth = useContext(AuthContext)
+export default function Auth({ email, loginTC, }) {
     const [isIn, setIn] = useState(true)
+    const { login, } = useAuth()
     const { loading, error, request, clearError, } = useHttp()
     const [authData, changeHandler] = useFormChange({ password: "", email: "", repeatPassword: "", })
 
-    const loginReq = async authData => {
-        const data = await request("api/auth/login", "POST", authData)
-        auth.login(data.token, data.userId, data.email)
-    }
 
     const registerHandler = async (e) => {
         e.preventDefault()
@@ -24,17 +20,16 @@ export default function Auth({ email, }) {
             // await loginReq(authData)
         }
         catch (e) {
-            // console.log()
         }
     }
 
     const loginHandler = async (e) => {
         e.preventDefault()
         try {
-            await loginReq(authData)
+            loginTC(request, authData, login)
         }
         catch (e) {
-            // console.log()
+            console.log(e)
         }
     }
 
@@ -49,7 +44,7 @@ export default function Auth({ email, }) {
     return (
         <Container component="main" maxWidth="xs">
             <Sign { ...signProps }/>
-            <Error { ...errorProps }/>
+            { /*<Error { ...errorProps }/>*/ }
         </Container >
     )
 }
