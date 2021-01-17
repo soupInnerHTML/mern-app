@@ -16,8 +16,9 @@ import { CircularProgress, Container } from "@material-ui/core";
 import { connect } from "react-redux";
 import { getErrors, getIsReady, getToken } from "./redux/selectors";
 import { clearError, setError } from "./redux/reducers/errorReducer";
-import { setToken } from "./redux/reducers/authReducer";
+import { setIsReady, setToken } from "./redux/reducers/authReducer";
 import Error from "./components/Common/Error";
+import Loader from "./components/Common/Loader/Loader";
 
 function App({ errors, clearError, isReady, globalToken, setToken, }) {
     const { token, } = useAuth()
@@ -29,23 +30,20 @@ function App({ errors, clearError, isReady, globalToken, setToken, }) {
     const routes = useRoutes(globalToken);
 
     const icons = {
-        todos: {
-            laptop: props => <LaptopMacIcon  { ...props } />,
-            burger: props => <FastfoodIcon  { ...props } />,
-            hotel: props => <HotelIcon  { ...props } />,
-            repeat: props =>  <RepeatIcon  { ...props } />,
-        },
+        laptop: props => <LaptopMacIcon  { ...props } />,
+        burger: props => <FastfoodIcon  { ...props } />,
+        hotel: props => <HotelIcon  { ...props } />,
+        repeat: props =>  <RepeatIcon  { ...props } />,
         add: props => <AddIcon { ...props } />,
         delete: props => <Delete { ...props } />,
         update: props => <CreateIcon  { ...props }/>,
-
     }
 
     return (
         <IconsContext.Provider value={ icons }>
             <Container>
                 { routes }
-                { !isReady && <div className={ "loader" }><CircularProgress /></div> }
+                { !isReady && <Loader/> }
                 <Error { ...{ errors, clearError, } }/>
             </Container>
         </IconsContext.Provider>
@@ -59,7 +57,7 @@ let mapStateToProps = state => ({
 })
 
 let mapDispatchToProps = {
-    setError, clearError, setToken,
+    setError, clearError, setToken, setIsReady,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

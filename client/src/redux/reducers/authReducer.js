@@ -27,6 +27,7 @@ export const loginTC = (request, authData, login) => async dispatch => {
     }
     catch (e) {
         dispatch(setError((e.message)))
+        dispatch(setIsReady(true))
     }
 }
 
@@ -37,12 +38,13 @@ export const registerTC = (request, authData, login) => async dispatch => {
     }
     catch (e) {
         dispatch(setError((e.message)))
+        dispatch(setIsReady(true))
     }
 }
 
 const initialState = {
     email: null,
-    jwtToken: null,
+    jwtToken: undefined,
     isReady: false,
 }
 

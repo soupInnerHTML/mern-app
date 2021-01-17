@@ -1,0 +1,24 @@
+.gradient {
+  text-decoration: none;
+  margin: 17px !important;
+  background: linear-gradient(-60deg, #904e95, #904e95, #e73c7e, #ee7752);
+  background-size: 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: flow 5s ease-in-out infinite;
+}
+
+@keyframes flow {
+  0% {
+    background-position: 0 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+/*# sourceMappingURL=Profile.module.css.map */

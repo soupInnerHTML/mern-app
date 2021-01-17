@@ -2,6 +2,7 @@ import React from "react"
 import { Redirect, Route, Switch } from "react-router-dom"
 import AuthContainer from "../components/Auth/AuthContainer";
 import TodosContainer from "../components/Todo/Todos/TodosContainer";
+import Loader from "../components/Common/Loader/Loader";
 
 export const useRoutes = token => {
     if (token) {
@@ -14,6 +15,10 @@ export const useRoutes = token => {
                 <Redirect to="/" />
             </Switch>
         )
+    }
+
+    else if (token === undefined) {
+        return <Loader/>
     }
 
     return (

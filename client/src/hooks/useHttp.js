@@ -37,5 +37,5 @@ export const useHttp = () => {
         }
     }, [])
 
-    return { loading, request, error, setError, ready, }
+    return { loading, setLoading, request, error, setError, ready, }
 }

@@ -25,6 +25,7 @@ $offset-more-x: 30px;
 }
 .icon {
   position: absolute !important;
+  cursor: pointer;
 }
 .deleteFromLeft {
   @include bottom;

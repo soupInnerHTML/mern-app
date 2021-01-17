@@ -55,10 +55,10 @@ router.delete('/:id', auth, async (req, res) => {
 
 router.put('/:id', auth, async (req, res) => {
     try {
-        const {id, body} = req.params
-        let todo = await Todo.findById(id)
+        const {params, body} = req
+        let todo = await Todo.findOneAndUpdate({_id: params.id}, body)
 
-        res.json(Todo)
+        res.json(todo)
     }
     catch (e) {
         res.status(500).json({ message: 'Failed to edit todo! Please, reload page and try again' })

@@ -2,9 +2,9 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import { IconsContext } from "../../../context/IconsContext"
 import { useHttp } from "../../../hooks/useHttp";
 import Timeline from "@material-ui/lab/Timeline";
-import ModalAddTodo from "../ModalAddTodo";
+import ModalAddTodo from "../Modal/ModalAddTodo";
 import css from "./Todos.module.css"
-import ProfileContainer from "../../Common/ProfileContainer";
+import ProfileContainer from "../../Common/Profile/ProfileContainer";
 import TodoContainer from "../Todo/TodoContainer";
 import { useAuth } from "../../../hooks/useAuth";
 import { CircularProgress, Container, Fab } from "@material-ui/core";

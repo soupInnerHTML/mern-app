@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, { useContext, useEffect, useRef, useState } from "react"
 import TimelineItem from "@material-ui/lab/TimelineItem";
 import TimelineSeparator from "@material-ui/lab/TimelineSeparator";
 import TimelineConnector from "@material-ui/lab/TimelineConnector";
@@ -7,12 +7,11 @@ import TimelineOppositeContent from "@material-ui/lab/TimelineOppositeContent";
 import TimelineDot from "@material-ui/lab/TimelineDot";
 import Paper from "@material-ui/core/Paper";
 import cs from "classnames"
-import ModalAddTodo from "../ModalAddTodo";
+import ModalAddTodo from "../Modal/ModalAddTodo";
 import css from "./Todo.module.css"
 import Typography from "@material-ui/core/Typography";
 import { Fab, makeStyles } from "@material-ui/core";
 import { useHttp } from "../../../hooks/useHttp";
-import { AuthContext } from "../../../context/AuthContext";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 
 const useStyles = makeStyles((theme) => ({
@@ -22,27 +21,36 @@ const useStyles = makeStyles((theme) => ({
     secondary: {
         backgroundColor: theme.palette.secondary.main,
     },
-    interactive: {
-        animation: "slideInUp 1s",
+    slideInUp: {
+        animation: "slideInUp .5s",
+    },
+    slideOutDown: {
+        animation: "slideOutDown .5s",
     },
 }));
 
-export default function Todo({ todo, todos, icons, order, setTodos, setError, token, deleteTodoTC, }) {
+export default function Todo({ todo, todos, icons, order, setTodos, setError, token, deleteTodoTC, setTodoToEdit, }) {
+    const blurRef = useRef(null)
 
     let tailTheme = todos[order + 1]?.theme
     const material = useStyles();
     const { request, error, } = useHttp()
-    const auth = useContext(AuthContext)
     const action = "edit"
 
     useEffect(() => {
         setError(error)
     }, [error])
 
+
     const [ isOpenModal, setOpenModal] = useState(false)
+    const [ isBlur, setIsBlur] = useState(true)
 
     const deleteTodo = async () => {
         try {
+            setIsBlur(false)
+            setTimeout(() => setIsBlur(true), 1000)
+
+            setHover(true)
             deleteTodoTC(request, token, todo._id)
         }
         catch (e) {
@@ -51,15 +59,38 @@ export default function Todo({ todo, todos, icons, order, setTodos, setError, to
 
     }
 
+    const editTodo = () => {
+        setOpenModal(true)
+        setTodoToEdit(todo)
+
+        setIsBlur(false)
+
+        setTimeout(() => setIsBlur(true), 1000)
+    }
+
     const [hover, setHover] = useState(false)
 
+    let [animSwitch, setAnimSwitch] = useState("hide")
+
     const toggleHover = () => {
+        !hover ? setAnimSwitch(material.slideInUp) : setAnimSwitch(material.slideOutDown)
         setHover(!hover)
     }
+
+    useEffect(() => {
+        blurRef.current.onblur = () => {
+            if (isBlur) {
+                console.log(blurRef)
+                setAnimSwitch(material.slideOutDown)
+                setHover(false)
+            }
+        }
+    }, [])
 
     const alternate = (action) => {
         return order % 2 ? css[action + "FromLeft"] : css[action + "FromRight"]
     }
+
 
     return (
         <TimelineItem>
@@ -71,12 +102,12 @@ export default function Todo({ todo, todos, icons, order, setTodos, setError, to
 
             <TimelineSeparator>
                 <TimelineDot color={ todo.theme === "disabled" ? undefined : todo.theme } variant={ !!todo.variant ? "outlined" : undefined }>
-                    { icons.todos[todo.icon]() }
+                    { icons[todo.icon]() }
                 </TimelineDot>
                 { order + 1 < todos.length && <TimelineConnector className={ material[tailTheme] } /> }
             </TimelineSeparator>
 
-            <TimelineContent>
+            <TimelineContent  style={ { zIndex: 5, } }>
                 <Paper elevation={ 3 } className={ css.paper }>
                     <Typography variant="h6" component="h1">
                         { todo.label }
@@ -86,16 +117,20 @@ export default function Todo({ todo, todos, icons, order, setTodos, setError, to
                 </Paper>
             </TimelineContent>
 
-            { hover && <>
-                <Fab size="small" color="secondary" className={ cs(alternate("delete" ), css.icon, material.interactive) }>
-                    { icons.delete({ onClick: () => deleteTodo(), }) }
-                </Fab>
-                <Fab size="small" color="primary" className={ cs(alternate("update" ), css.icon, material.interactive) }>
-                    { icons.update({ onClick: () => setOpenModal(true), }) }
-                </Fab>
-            </> }
 
-            <MoreVertIcon className={ cs(css.icon, alternate("more" )) } onClick={ toggleHover }/>
+            <Fab size="small" color="secondary" className={ cs(alternate("delete" ), css.icon, animSwitch) }>
+                { icons.delete({ onClick: deleteTodo, }) }
+            </Fab>
+            <Fab size="small" color="primary" className={ cs(alternate("update" ), css.icon, animSwitch) }>
+                { icons.update({ onClick: editTodo, }) }
+            </Fab>
+
+            <MoreVertIcon
+                style={ { zIndex: 6, } }
+                className={ cs(css.icon, alternate("more" )) }
+                onClick={ toggleHover }
+                ref={ blurRef }
+            />
 
             <ModalAddTodo { ...{ isOpenModal, setOpenModal, action, } }/>
         </TimelineItem>

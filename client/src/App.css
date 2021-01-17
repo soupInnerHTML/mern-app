@@ -1,18 +1,14 @@
-.MuiList-padding {
-  padding: 0 !important;
+* {
+  animation-fill-mode: forwards !important;
+  outline: none !important;
 }
 
-.loader {
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  bottom: 0;
-  background: #fff;
-  align-items: center;
-  justify-content: center;
-  display: flex;
-  z-index: 12;
+.hide {
+  display: none !important;
+}
+
+.MuiList-padding {
+  padding: 0 !important;
 }
 
 @keyframes slideInUp {
@@ -24,6 +20,26 @@
   to {
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+@keyframes slideOutDown {
+  from {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    opacity: 0;
+    -webkit-transform: translate3d(0, 100%, 0);
+    transform: translate3d(0, 100%, 0);
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
     opacity: 1;
   }
 }

@@ -5,6 +5,8 @@ import { setIsReady } from "./authReducer";
 const SET_TODOS = "todoReducer/setTodos"
 const ADD_TODOS = "todoReducer/addTodos"
 const DELETE_TODO = "todoReducer/deleteTodo"
+const EDIT_TODO = "todoReducer/editTodo"
+const SET_TODO_TO_EDIT = "todoReducer/setTodoToEdit"
 
 export const setTodos = todos => ({
     type: SET_TODOS,
@@ -17,6 +19,15 @@ export const addTodos = todos => ({
 export const deleteTodo = id => ({
     type: DELETE_TODO,
     id,
+})
+export const editTodo = (id, body) => ({
+    type: EDIT_TODO,
+    id,
+    body,
+})
+export const setTodoToEdit = todo => ({
+    type: SET_TODO_TO_EDIT,
+    todo,
 })
 
 const initialState = {
@@ -52,6 +63,7 @@ const initialState = {
         desc: "Because this is the life you love!",
         theme: "secondary",
     }],
+    todoToEdit: null,
 }
 
 export const getTodosTC = (request, token, logout) => async dispatch => {
@@ -62,8 +74,9 @@ export const getTodosTC = (request, token, logout) => async dispatch => {
     }
     catch (e) {
         dispatch( setError(e.message + " !") )
+        dispatch(setIsReady(true))
         if (e.message === "Нет авторизации") {
-            // logout()
+            logout()
         }
     }
 }
@@ -88,14 +101,28 @@ export const deleteTodoTC = (request, token, id) => async dispatch => {
     }
 }
 
+export const editTodoTC = (request, token, id, payload) => async dispatch => {
+    try {
+        const todos = await thinRequest(request, "todo/" + id, token, "PUT", payload)
+        dispatch(editTodo(id, payload))
+    }
+    catch (e) {
+        dispatch( setError(e.message) )
+    }
+}
+
 const todosReducer = (state = initialState, action) => {
     switch (action.type) {
         case SET_TODOS:
-            return { todosData: action.todos, }
+            return { ...state, todosData: action.todos, }
         case ADD_TODOS:
-            return { todosData: [...state.todosData, ...action.todos], }
+            return { ...state, todosData: [...state.todosData, ...action.todos], }
         case DELETE_TODO:
-            return { todosData: state.todosData.filter(todoToDelete => todoToDelete._id !== action.id ), }
+            return { ...state, todosData: state.todosData.filter(todoToDelete => todoToDelete._id !== action.id ), }
+        case EDIT_TODO:
+            return { ...state, todosData: state.todosData.map(todo => todo._id === action.id ? action.body : todo ), }
+        case SET_TODO_TO_EDIT:
+            return { ...state, todoToEdit: action.todo, }
         default:
             return state
     }

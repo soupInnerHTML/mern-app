@@ -1,5 +1,5 @@
 import React from "react"
-import { makeStyles, Modal } from "@material-ui/core"
+import { Dialog, makeStyles, Slide } from "@material-ui/core"
 import FormAddTodoContainer from "./FormAddTodoContainer";
 
 const useStyles = makeStyles((theme) => ({
@@ -24,10 +24,13 @@ const useStyles = makeStyles((theme) => ({
         width: 400,
         backgroundColor: theme.palette.background.paper,
         outline: "none",
-        // boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
     },
 }));
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ ref } { ...props } />;
+});
   
 
 export default function ModalAddTodo({ isOpenModal, setOpenModal, action, }) {
@@ -36,15 +39,16 @@ export default function ModalAddTodo({ isOpenModal, setOpenModal, action, }) {
     
     return (
         <>
-            <Modal
+            <Dialog
                 open={ isOpenModal }
                 className={ classes.modal }
                 onClose={ handleClose }
+                TransitionComponent={ Transition }
             >
                 <div className={ classes.paper }>
                     <FormAddTodoContainer { ...{ handleClose, action, } }/>
                 </div>
-            </Modal>
+            </Dialog>
         </>
     )
 }

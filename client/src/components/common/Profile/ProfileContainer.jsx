@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Profile from "./Profile";
 import { connect } from "react-redux"
-import { setToken } from "../../redux/reducers/authReducer";
+import { setToken } from "../../../redux/reducers/authReducer";
 
 // class ProfileContainer extends Component {
 //     render() {

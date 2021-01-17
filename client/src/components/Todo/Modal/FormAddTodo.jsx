@@ -5,30 +5,30 @@ import TextField from "@material-ui/core/TextField";
 import TimePicker from "./TimePicker";
 import getId from "lodash/uniqueId"
 import { Button, FormControlLabel, FormHelperText, MenuItem, Select, Switch } from "@material-ui/core";
-import { IconsContext } from "../../context/IconsContext"
-import { useFormChange } from "../../hooks/useFormChange";
+import { IconsContext } from "../../../context/IconsContext"
+import { useFormChange } from "../../../hooks/useFormChange";
 import { format } from "date-fns"
-import { useHttp } from "../../hooks/useHttp";
-import { toCapitalize } from "../../utils/utils";
-import { useAuth } from "../../hooks/useAuth";
+import { useHttp } from "../../../hooks/useHttp";
+import { toCapitalize } from "../../../utils/utils";
+import { useAuth } from "../../../hooks/useAuth";
 
-export default function FormAddTodo({ handleClose, action, setTodos, addTodosTC, }) {
-    const icons = useContext(IconsContext).todos
+export default function FormAddTodo({ handleClose, action, addTodosTC, editTodoTC, todoToEdit, setTodoToEdit, }) {
+    const icons = useContext(IconsContext)
     const [variant, setVariant] = useState(false)
     const iconsKeys = Object.keys(icons)
-    const { request, } = useHttp()
+    const [submit, setSubmit] = useState(false)
+    const { request, loading, } = useHttp()
 
-    const editTodo = (todos, body, id) => {
-        setTodos(todos.map(todo => todo._id === id ? body : todo))
-    }
-
-    const [todoData, changeHandler] = useFormChange({
+    let initialState = action === "edit" ? todoToEdit : {
         label: "",
         icon: iconsKeys[0],
         desc: "",
         time: format(new Date(), "p").toLowerCase(),
         theme: "primary",
-    })
+    }
+
+
+    const [todoData, changeHandler] = useFormChange(initialState)
 
     const themes = ["primary", "secondary", "disabled", "default"]
 
@@ -36,23 +36,24 @@ export default function FormAddTodo({ handleClose, action, setTodos, addTodosTC,
 
     const submitHandler = async (e) => {
         e.preventDefault()
+        setTodoToEdit(null)
+        setSubmit(true)
 
+        if (todoData.desc && todoData.label) {
+            try {
+                setSubmit(false)
 
-        try {
-            if (action === "add") {
-                let response = await addTodosTC(request, token, { ...todoData, owner: userId, })
+                if (action === "add") {
+                    let response = await addTodosTC(request, token, { ...todoData, owner: userId, })
+                }
+                if (action === "edit") {
+                    let response = await editTodoTC(request, token, todoToEdit._id, { ...todoData, owner: userId, })
+                }
+                handleClose()
+
             }
-            if (action === "edit") {
-                // let response = await request("/api/todo/" + todos[4]._id, "PUT", { ...todoData, owner: userId, }, {
-                //     Authorization: `Bearer ${token}`,
-                // } )
-                // editTodo(todoData, todos[4]._id)
-            }
-            handleClose()
+            catch (e) {}
 
-            // console.log(response)
-        }
-        catch (e) {
         }
     }
 
@@ -65,10 +66,6 @@ export default function FormAddTodo({ handleClose, action, setTodos, addTodosTC,
         if (e.target.value === "default") {
             setVariant(true)
         }
-
-        // else {
-        //     setVariant(false)
-        // }
         
         changeHandler(e)
     }
@@ -83,11 +80,9 @@ export default function FormAddTodo({ handleClose, action, setTodos, addTodosTC,
             <Grid container spacing={ 3 }>
                 <Grid item xs={ 12 } sm={ 6 } style={ { marginTop: 15, } }>
                     <TextField
-                        // required
-                        // placeholder={}
                         value={ todoData.label }
-                        // error={  errorCustom[0] }
-                        // helperText={ errorCustom[1] }
+                        error={ submit && !todoData.label }
+                        helperText={ submit && !todoData.label && "Label is required" }
                         id="label"
                         name="label"
                         label="Label"
@@ -122,8 +117,9 @@ export default function FormAddTodo({ handleClose, action, setTodos, addTodosTC,
 
                 <Grid item xs={ 12 }>
                     <TextField
-                        // required
                         value={ todoData.desc }
+                        error={  submit && !todoData.desc }
+                        helperText={ submit && !todoData.desc && "Description is required" }
                         id="desc"
                         name="desc"
                         label="Description"
@@ -142,7 +138,7 @@ export default function FormAddTodo({ handleClose, action, setTodos, addTodosTC,
                 </Grid>
 
                 <Grid item xs={ 12 } sm={ 6 }>
-                    <Button type="submit" color="secondary">
+                    <Button type="submit" color="secondary" disabled={ loading }>
                         { action }
                     </Button>
                     

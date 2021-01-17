@@ -4,6 +4,7 @@
 
 .icon {
   position: absolute !important;
+  cursor: pointer;
 }
 
 .deleteFromLeft {

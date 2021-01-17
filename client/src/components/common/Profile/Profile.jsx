@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../../hooks/useAuth";
 import { deepOrange, deepPurple, green, pink } from "@material-ui/core/colors";
 import Avatar from "@material-ui/core/Avatar";
 import MenuItem from "@material-ui/core/MenuItem";
 import Divider from "@material-ui/core/Divider";
 import Menu from "@material-ui/core/Menu";
+import { Link } from "react-router-dom";
+import css from "./Profile.module.css"
 
 
 const useStyles = makeStyles((theme) => ({
@@ -58,6 +60,7 @@ export default function Profile({ setToken, }) {
 
     return (
         <div className={ material.root }>
+            <Link to="/" className={ css.gradient }>Bookmarks</Link>
             <Avatar onClick={ handleClick } style={ { cursor: "pointer", } } className={ material[avatar] }>{ (email || [" "])[0].toUpperCase() }</Avatar>
 
             <Menu
