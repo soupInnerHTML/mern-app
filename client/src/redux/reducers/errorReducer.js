@@ -5,21 +5,16 @@ export const setError = (error) => ({
     type: SET_ERROR,
     error,
 })
-export const clearError = (errorId) => ({
+export const clearError = () => ({
     type: CLEAR_ERROR,
-    errorId,
 })
 
-const initialState = {
-    errors: [],
-}
-
-const errorReducer = (state = initialState, action) => {
+const errorReducer = (state = "", action) => {
     switch (action.type) {
         case SET_ERROR:
-            return { errors: [...state.errors, action.error], }
+            return action.error
         case CLEAR_ERROR:
-            return { errors: state.errors.filter((_, id) => id === action.errorId), }
+            return ""
         default:
             return state
     }

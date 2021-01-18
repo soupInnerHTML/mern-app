@@ -21,25 +21,9 @@ const useStyles = makeStyles((theme) => ({
             margin: theme.spacing(1),
         },
     },
-    orange: {
-        color: theme.palette.getContrastText(deepOrange[500]),
-        backgroundColor: deepOrange[500],
-    },
-    purple: {
-        color: theme.palette.getContrastText(deepPurple[500]),
-        backgroundColor: deepPurple[500],
-    },
-    pink: {
-        color: theme.palette.getContrastText(pink[500]),
-        backgroundColor: pink[500],
-    },
-    green: {
-        color: theme.palette.getContrastText(green[500]),
-        backgroundColor: green[500],
-    },
 }));
 
-export default function Profile({ setToken, }) {
+export default function Profile({ setToken, link, routes, colors, }) {
     const material = useStyles();
     const [anchorEl, setAnchorEl] = useState(null);
     const { logout, email, avatar, } = useAuth()
@@ -60,8 +44,8 @@ export default function Profile({ setToken, }) {
 
     return (
         <div className={ material.root }>
-            <Link to="/" className={ css.gradient }>Bookmarks</Link>
-            <Avatar onClick={ handleClick } style={ { cursor: "pointer", } } className={ material[avatar] }>{ (email || [" "])[0].toUpperCase() }</Avatar>
+            <Link to={ routes[link.toLowerCase()] } className={ css.gradient }>{ link }</Link>
+            <Avatar onClick={ handleClick } style={ { ...colors[avatar], cursor: "pointer", } }>{ (email || [" "])[0].toUpperCase() }</Avatar>
 
             <Menu
                 id="simple-menu"

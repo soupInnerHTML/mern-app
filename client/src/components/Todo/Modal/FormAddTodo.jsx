@@ -5,15 +5,13 @@ import TextField from "@material-ui/core/TextField";
 import TimePicker from "./TimePicker";
 import getId from "lodash/uniqueId"
 import { Button, FormControlLabel, FormHelperText, MenuItem, Select, Switch } from "@material-ui/core";
-import { IconsContext } from "../../../context/IconsContext"
 import { useFormChange } from "../../../hooks/useFormChange";
 import { format } from "date-fns"
 import { useHttp } from "../../../hooks/useHttp";
 import { toCapitalize } from "../../../utils/utils";
 import { useAuth } from "../../../hooks/useAuth";
 
-export default function FormAddTodo({ handleClose, action, addTodosTC, editTodoTC, todoToEdit, setTodoToEdit, }) {
-    const icons = useContext(IconsContext)
+export default function FormAddTodo({ handleClose, action, addTodosTC, editTodoTC, todoToEdit, setTodoToEdit, icons, themes, }) {
     const [variant, setVariant] = useState(false)
     const iconsKeys = Object.keys(icons)
     const [submit, setSubmit] = useState(false)
@@ -27,10 +25,7 @@ export default function FormAddTodo({ handleClose, action, addTodosTC, editTodoT
         theme: "primary",
     }
 
-
     const [todoData, changeHandler] = useFormChange(initialState)
-
-    const themes = ["primary", "secondary", "disabled", "default"]
 
     const { userId, token, } = useAuth()
 
@@ -80,6 +75,7 @@ export default function FormAddTodo({ handleClose, action, addTodosTC, editTodoT
             <Grid container spacing={ 3 }>
                 <Grid item xs={ 12 } sm={ 6 } style={ { marginTop: 15, } }>
                     <TextField
+                        maxlength="30"
                         value={ todoData.label }
                         error={ submit && !todoData.label }
                         helperText={ submit && !todoData.label && "Label is required" }
@@ -117,6 +113,7 @@ export default function FormAddTodo({ handleClose, action, addTodosTC, editTodoT
 
                 <Grid item xs={ 12 }>
                     <TextField
+                        maxlength="256"
                         value={ todoData.desc }
                         error={  submit && !todoData.desc }
                         helperText={ submit && !todoData.desc && "Description is required" }

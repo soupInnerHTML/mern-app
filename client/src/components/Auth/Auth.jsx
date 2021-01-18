@@ -6,12 +6,11 @@ import { useFormChange } from "../../hooks/useFormChange";
 import { useAuth } from "../../hooks/useAuth";
 import sample from "lodash/sample"
 
-export default ({ loginTC, registerTC, setIsReady, }) => {
+export default ({ loginTC, registerTC, setIsReady, colors, }) => {
     const [isIn, setIn] = useState(true)
     const { login, } = useAuth()
     const { loading, request, } = useHttp()
     const [authData, changeHandler] = useFormChange({ password: "", email: "", repeatPassword: "", })
-    const colors = ["orange", "purple", "pink", "green"]
 
     useEffect(() => {
         setIsReady(true)
@@ -25,7 +24,7 @@ export default ({ loginTC, registerTC, setIsReady, }) => {
 
 
     const registerHandler = async (e) => {
-        handler(e, registerTC, { avatar: sample(colors), })
+        handler(e, registerTC, { avatar: sample(Object.keys(colors)), })
     }
 
     const loginHandler = async (e) => {

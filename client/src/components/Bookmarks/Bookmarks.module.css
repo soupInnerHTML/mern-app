@@ -1,0 +1,23 @@
+.bookmark {
+  max-width: 300px;
+  padding: 30px;
+  cursor: move;
+}
+.bookmark div {
+  color: #fff !important;
+}
+.bookmark .tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  margin-top: 30px;
+}
+.bookmark .tags span {
+  cursor: pointer;
+}
+.bookmark .tags span:hover {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+/*# sourceMappingURL=Bookmarks.module.css.map */

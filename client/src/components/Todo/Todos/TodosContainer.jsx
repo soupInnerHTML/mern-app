@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { getTodosData, getIsReady } from "../../../redux/selectors";
+import { getTodosData, getIsReady, getIcons } from "../../../redux/selectors";
 import { connect } from "react-redux";
-import Todos from "./Todos";
 import { setTodos, getTodosTC } from "../../../redux/reducers/todosReducer";
+import Todos from "./Todos";
 
 // class TodosContainer extends Component {
 //     render() {
@@ -16,6 +16,7 @@ import { setTodos, getTodosTC } from "../../../redux/reducers/todosReducer";
 
 let mapStateToProps = state => ({
     todos: getTodosData(state),
+    icons: getIcons(state),
     isReady: getIsReady(state),
 })
 

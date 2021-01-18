@@ -2,17 +2,22 @@ import React from "react"
 import { Redirect, Route, Switch } from "react-router-dom"
 import AuthContainer from "../components/Auth/AuthContainer";
 import TodosContainer from "../components/Todo/Todos/TodosContainer";
+import BookmarksContainer from "../components/Bookmarks/BookmarksContainer";
 import Loader from "../components/Common/Loader/Loader";
 
-export const useRoutes = token => {
+export const useRoutes = (token, routes) => {
     if (token) {
         return (
             <Switch>
-                <Route path="/" exact>
+                <Route path={ routes.todos } exact>
                     <TodosContainer/>
                 </Route>
 
-                <Redirect to="/" />
+                <Route path={ routes.bookmarks }>
+                    <BookmarksContainer/>
+                </Route>
+
+                <Redirect to={ routes.bookmarks } />
             </Switch>
         )
     }
@@ -23,11 +28,11 @@ export const useRoutes = token => {
 
     return (
         <Switch>
-            <Route path="/auth" exact>
+            <Route path={ routes.auth } exact>
                 <AuthContainer/>
             </Route>
 
-            <Redirect to="/auth" />
+            <Redirect to={ routes.auth } />
         </Switch>
     )
 }

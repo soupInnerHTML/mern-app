@@ -1,6 +1,6 @@
 import { thinRequest } from "../../utils/utils";
 import { setError } from "./errorReducer";
-import { setIsReady } from "./authReducer";
+import { setIsReady, setToken } from "./authReducer";
 
 const SET_TODOS = "todoReducer/setTodos"
 const ADD_TODOS = "todoReducer/addTodos"
@@ -31,38 +31,7 @@ export const setTodoToEdit = todo => ({
 })
 
 const initialState = {
-    todosData: [{
-        _id: 1,
-        time: "9:30 am",
-        icon: "burger",
-        label: "Eat",
-        desc: "Because you need strength.",
-    },
-    {
-        _id: 2,
-        time: "10:00 am",
-        icon: "laptop",
-        label: "Code",
-        desc: "Because it's awesome!",
-        theme: "primary",
-    },
-    {
-        _id: 3,
-        time: "10:30 am",
-        icon: "hotel",
-        theme: "primary",
-        label: "Sleep",
-        desc: "Because you need rest",
-        variant: "outlined",
-    },
-    {
-        _id: 4,
-        time: "11:30 am",
-        icon: "repeat",
-        label: "Repeat",
-        desc: "Because this is the life you love!",
-        theme: "secondary",
-    }],
+    todosData: [],
     todoToEdit: null,
 }
 
@@ -77,10 +46,10 @@ export const getTodosTC = (request, token, logout) => async dispatch => {
         dispatch(setIsReady(true))
         if (e.message === "Нет авторизации") {
             logout()
+            dispatch(setToken(null))
         }
     }
 }
-
 export const addTodosTC = (request, token, payload) => async dispatch => {
     try {
         const todos = await thinRequest(request, "todo", token, "POST", payload)
@@ -90,7 +59,6 @@ export const addTodosTC = (request, token, payload) => async dispatch => {
         dispatch( setError(e.message) )
     }
 }
-
 export const deleteTodoTC = (request, token, id) => async dispatch => {
     try {
         const todos = await thinRequest(request, "todo/" + id, token, "DELETE")
@@ -100,7 +68,6 @@ export const deleteTodoTC = (request, token, id) => async dispatch => {
         dispatch( setError(e.message) )
     }
 }
-
 export const editTodoTC = (request, token, id, payload) => async dispatch => {
     try {
         const todos = await thinRequest(request, "todo/" + id, token, "PUT", payload)

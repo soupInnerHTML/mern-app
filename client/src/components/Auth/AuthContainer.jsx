@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Auth from "./Auth";
 import { connect } from "react-redux"
 import { loginTC, registerTC, setIsReady } from "../../redux/reducers/authReducer";
+import { getColors } from "../../redux/selectors"
 
 // class AuthContainer extends Component {
 //
@@ -13,7 +14,7 @@ import { loginTC, registerTC, setIsReady } from "../../redux/reducers/authReduce
 // }
 
 let mapStateToProps = state => ({
-
+    color: getColors(state),
 })
 
 let mapDispatchToProps = {
