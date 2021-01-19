@@ -15,13 +15,13 @@ function Error({ error, clearError, }) {
 
     
     return <Snackbar
-        open={ !!error }
+        open={ error.isOpen }
         autoHideDuration={ 6000 }
         onClose={ clearError }
         TransitionComponent={ SlideTransition }
     >
-        <Alert onClose={ clearError } severity="error">
-            { error }
+        <Alert onClose={ clearError } severity={ error.severity }>
+            { error.text }
         </Alert>
 
     </Snackbar>

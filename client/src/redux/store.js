@@ -6,6 +6,11 @@ import libraryReducer from "./reducers/libraryReducer";
 import todosReducer from "./reducers/todosReducer";
 import routesReducer from "./reducers/routesReducer";
 import bookmarksReducer from "./reducers/bookmarksReducer";
+import createSagaMiddleware from "redux-saga";
+import { sagaWatcher } from "./sagas";
+
+const saga = createSagaMiddleware()
+
 
 let reducers = combineReducers({
     auth: authReducer,
@@ -17,7 +22,9 @@ let reducers = combineReducers({
 })
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
-let store = createStore(reducers, composeEnhancers(applyMiddleware(thunkMiddleware)) )
+let store = createStore(reducers, composeEnhancers(applyMiddleware(thunkMiddleware, saga)) )
+
+saga.run(sagaWatcher)
 
 window.store = store
 

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { deleteTag } from "../../../redux/reducers/bookmarksReducer";
+import { deleteTag, editBookmarkTC } from "../../../redux/reducers/bookmarksReducer";
 import BookmarkTags from "./BookmarkTags";
 
 
@@ -19,6 +19,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     deleteTag,
+    editBookmarkTC,
 }
 
 export default connect(

@@ -9,6 +9,7 @@ app.use(express.json({ extended: true }))
 
 app.use('/api/auth', require('./routes/auth.routes.js'))
 app.use('/api/todo', require('./routes/todo.routes.js'))
+app.use('/api/bookmark', require('./routes/bookmark.routes.js'))
 
 if(process.env.NODE_ENV === 'production') {
     app.use('/', express.static(path.join(__dirname, 'client', 'build')))

@@ -1,12 +1,11 @@
 const { Router } = require('express')
 const Todo = require('../models/Todo')
 const auth = require('../middleware/auth.middleware')
-const config = require('config')
+// const config = require('config')
 const router = Router()
 
 router.post('/', auth, async (req, res) => {
     try {
-        // const baseUrl = config.get('baseUrl')
         const { body } = req
         const todo = new Todo(body)
 

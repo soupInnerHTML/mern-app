@@ -21,12 +21,6 @@ const useStyles = makeStyles((theme) => ({
     secondary: {
         backgroundColor: theme.palette.secondary.main,
     },
-    slideInUp: {
-        animation: "slideInUp .5s",
-    },
-    slideOutDown: {
-        animation: "slideOutDown .5s",
-    },
 }));
 
 export default function Todo({ todo, todos, icons, order, setTodos, setError, token, deleteTodoTC, setTodoToEdit, }) {
@@ -73,7 +67,7 @@ export default function Todo({ todo, todos, icons, order, setTodos, setError, to
     let [animSwitch, setAnimSwitch] = useState("hide")
 
     const toggleHover = () => {
-        !hover ? setAnimSwitch(material.slideInUp) : setAnimSwitch(material.slideOutDown)
+        !hover ? setAnimSwitch("slideInUp") : setAnimSwitch("slideOutDown")
         setHover(!hover)
     }
 

@@ -1,8 +1,19 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Chip } from "@material-ui/core";
+import { useHttp } from "../../../hooks/useHttp";
+import { useAuth } from "../../../hooks/useAuth";
 
-const BookmarkTags = ({ tags, _id, deleteTag, }) => {
+const BookmarkTags = ({ tags, _id, deleteTag, editBookmarkTC, }) => {
+
+    const { request, } = useHttp()
+    const { token, } = useAuth()
+
+    const handleDelete = (order) => {
+        editBookmarkTC(request, token, _id, {
+            tags: tags.filter((_, i) => i !== order),
+        })
+    }
 
     return tags.map((tag, order) => {
         return (
@@ -10,11 +21,11 @@ const BookmarkTags = ({ tags, _id, deleteTag, }) => {
                 key={ order }
                 label={ tag }
                 variant="outlined"
-                onDelete={ deleteTag.bind(0, order, _id ) }
+                onDelete={ () => handleDelete(order) }
             />
         )
     })
-};
+}
 
 BookmarkTags.propTypes = {};
 BookmarkTags.defaultProps = {};

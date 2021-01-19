@@ -1,14 +1,5 @@
 * {
   animation-fill-mode: forwards !important;
-  outline: none !important;
-}
-
-.hide {
-  display: none !important;
-}
-
-.MuiList-padding {
-  padding: 0 !important;
 }
 
 @keyframes slideInUp {
@@ -42,6 +33,61 @@
   to {
     opacity: 1;
   }
+}
+@keyframes pulse {
+  from {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+  50% {
+    -webkit-transform: scale3d(1.1, 1.1, 1.1);
+    transform: scale3d(1.1, 1.1, 1.1);
+  }
+  to {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+}
+@keyframes zoomOut {
+  from {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+    -webkit-transform: scale3d(0.3, 0.3, 0.3);
+    transform: scale3d(0.3, 0.3, 0.3);
+  }
+  to {
+    opacity: 0;
+  }
+}
+.zoomOut {
+  animation: zoomOut 0.8s;
+}
+
+.slideInUp {
+  animation: slideInUp 0.5s;
+}
+
+.slideOutDown {
+  animation: slideOutDown 0.5s;
+}
+
+.fadeIn {
+  animation: fadeIn 0.4s;
+}
+
+* {
+  outline: none !important;
+  font-family: Roboto, sans-serif;
+}
+
+.hide {
+  display: none !important;
+}
+
+.MuiList-padding {
+  padding: 0 !important;
 }
 
 /*# sourceMappingURL=App.css.map */
