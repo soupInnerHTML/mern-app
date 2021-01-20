@@ -1,7 +1,7 @@
 import { setError } from "./errorReducer";
 
 const SET_EMAIL = "authReducer/setEmail"
-const SET_TOKEN = "authReducer/setToken"
+export const SET_TOKEN = "authReducer/setToken"
 const SET_IS_READY = "authReducer/setIsReady"
 
 export const setEmail = (email) => ({

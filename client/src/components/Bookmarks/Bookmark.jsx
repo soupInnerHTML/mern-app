@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Icon, Paper, TextareaAutosize } from "@material-ui/core";
+import { Icon, Paper } from "@material-ui/core";
 import Draggable from "react-draggable";
 import css from "./Bookmarks.module.css"
 import cs from "classnames"
@@ -9,24 +9,23 @@ import EditContent from "./Edit/EditContent";
 import { connect } from "react-redux";
 import { deleteBookmarkTC, editBookmarkTC } from "../../redux/reducers/bookmarksReducer";
 import { useHttp } from "../../hooks/useHttp";
-import { useAuth } from "../../hooks/useAuth";
 
 const Bookmark = ({ colors, pos, color, content, tags, _id, deleteBookmarkTC, editBookmarkTC, }) => {
 
     const [isClose, setClose] = useState(false)
     const { request, } = useHttp()
-    const { token, } = useAuth()
+    const nodeRef = React.useRef(null);
 
     const close = () => {
         setClose(true)
-        setTimeout(() => deleteBookmarkTC(request, token, _id), 800)
+        setTimeout(() => deleteBookmarkTC(request, _id), 800)
     }
 
     const setPosOnStop = (e, data) => {
         // console.log("Event: ", e);
         // console.log("Data: ", data);
 
-        editBookmarkTC(request, token, _id, { pos: {
+        editBookmarkTC(request, _id, { pos: {
             x: data.lastX,
             y: data.lastY, },
         }, _id)
@@ -34,10 +33,10 @@ const Bookmark = ({ colors, pos, color, content, tags, _id, deleteBookmarkTC, ed
 
     return (
         <>
-            <Draggable position={ pos } onStop={ setPosOnStop } handle="#handle">
-                <Paper elevation={ 3 } className={ cs(css.bookmark, { zoomOut: isClose, }) } style={ colors[color] }>
+            <Draggable nodeRef={ nodeRef } position={ pos } onStop={ setPosOnStop } handle="#handle">
+                <Paper ref={ nodeRef } elevation={ 3 } className={ cs(css.bookmark, { zoomOut: isClose, }) } style={ colors[color] }>
 
-                    <Icon color="#fff" className={ css.close } onClick={ close }>close</Icon>
+                    <Icon className={ css.close } onClick={ close }>close</Icon>
 
                     <div className={ css.handle } id={ "handle" }></div>
 

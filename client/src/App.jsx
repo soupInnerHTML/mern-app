@@ -14,7 +14,9 @@ function App({ error, clearError, isReady, globalToken, setToken, routes, }) {
     const { token, } = useAuth()
 
     useEffect(() => {
-        setToken(token)
+        if (globalToken !== null) {
+            setToken(token)
+        }
     }, [token])
 
     const routesTree = useRoutes(globalToken, routes);

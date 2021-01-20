@@ -31,9 +31,9 @@ export default function Todo({ todo, todos, icons, order, setTodos, setError, to
     const { request, error, } = useHttp()
     const action = "edit"
 
-    useEffect(() => {
-        setError(error)
-    }, [error])
+    // useEffect(() => {
+    //     setError(error)
+    // }, [error])
 
 
     const [ isOpenModal, setOpenModal] = useState(false)

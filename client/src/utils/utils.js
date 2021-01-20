@@ -9,3 +9,7 @@ export const thinRequest = async (request, endPoint, token = "", method = "GET",
 
     return _response
 }
+
+export const clearStroage = () => {
+    localStorage.removeItem("storageName")
+}

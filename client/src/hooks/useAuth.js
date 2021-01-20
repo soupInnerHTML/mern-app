@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from "react"
+import { clearStroage } from "../utils/utils";
 
 export const useAuth = () => {
-    let [token, setToken] = useState(null)
+    let [token, setToken] = useState(false)
     let [userId, setUserId] = useState(null)
     let [email, setEmail] = useState(null)
     let [avatar, setAvatar] = useState(null)
@@ -22,8 +23,8 @@ export const useAuth = () => {
         setUserId(null)
         setEmail(null)
         setAvatar(null)
-        
-        localStorage.removeItem("storageName")
+
+        clearStroage()
         if (error){
             throw error
         }

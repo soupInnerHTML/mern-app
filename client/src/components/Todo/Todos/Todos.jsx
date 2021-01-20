@@ -1,26 +1,26 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useHttp } from "../../../hooks/useHttp";
+import { useAuth } from "../../../hooks/useAuth";
 import Timeline from "@material-ui/lab/Timeline";
 import ModalAddTodo from "../Modal/ModalAddTodo";
 import css from "./Todos.module.css"
 import ProfileContainer from "../../Common/Profile/ProfileContainer";
 import TodoContainer from "../Todo/TodoContainer";
-import { useAuth } from "../../../hooks/useAuth";
 import AddBtn from "../../Common/AddBtn";
 
 
-export default function Todos({ todos, setTodos, getTodosTC, isReady, icons, }) {
+export default function Todos({ todos, setTodos, getTodosTC, icons, }) {
     const action = "add"
 
     const [isOpenModal, setOpenModal] = useState(false)
     const { request, } = useHttp()
 
-    const { logout, token, } = useAuth()
+    const { token, } = useAuth()
 
 
-    const getTodos = useCallback(async () => {
+    const getTodos = useCallback(() => {
         if (token) {
-            await getTodosTC(request, token, logout)
+            getTodosTC(request)
         }
     }, [request, token])
 

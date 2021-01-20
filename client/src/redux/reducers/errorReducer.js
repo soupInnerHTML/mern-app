@@ -1,4 +1,4 @@
-const SET_ERROR = "errorReducer/setError"
+export const SET_ERROR = "errorReducer/setError"
 export const SET_ALERT = "errorReducer/setSuccess"
 const CLEAR_ERROR = "errorReducer/clearError"
 

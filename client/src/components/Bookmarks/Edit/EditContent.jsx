@@ -1,20 +1,19 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { TextareaAutosize } from "@material-ui/core";
-import css from "./EditContent.module.css"
 import { connect } from "react-redux";
 import { setAlert } from "../../../redux/reducers/errorReducer";
 import { editBookmarkTC } from "../../../redux/reducers/bookmarksReducer";
 import { useHttp } from "../../../hooks/useHttp";
-import { useAuth } from "../../../hooks/useAuth";
+import css from "./EditContent.module.css"
+import cs from "classnames"
 
 const EditContent = ({ setAlert, editBookmarkTC, content, _id, }) => {
     let [edit, setEdit] = useState(false)
     let [editValue, setEditValue] = useState(content)
-    let [startPulse, setStartPulse] = useState(false)
+    let [pulse, setPulse] = useState(false)
 
     const { request, } = useHttp()
-    const { token, } = useAuth()
 
     const handleEdit = e => {
         setEditValue(e.target.value)
@@ -22,13 +21,13 @@ const EditContent = ({ setAlert, editBookmarkTC, content, _id, }) => {
 
     const saveEdit = e => {
         setEdit(false)
-        editBookmarkTC(request, token, _id, { content: editValue.trim() || "Напишите что-нибудь...", }, _id)
+        editBookmarkTC(request, _id, { content: editValue.trim() || "Напишите что-нибудь...", }, _id)
     }
 
     const copyContent = (e) => {
         e.preventDefault()
-        setStartPulse(true)
-        setTimeout(() => setStartPulse(false), 350)
+        setPulse(true)
+        setTimeout(() => setPulse(false), 350)
         navigator.clipboard.writeText(content)
         setAlert("Текст скопирован")
     }
@@ -51,7 +50,7 @@ const EditContent = ({ setAlert, editBookmarkTC, content, _id, }) => {
                     onChange={ handleEdit }
                 /> : <p
                     onContextMenu={ copyContent }
-                    style={ startPulse ? { animation: "pulse .35s", } : {} }
+                    className={ cs({ pulse, }) }
                 >
                     { content }
                 </p> }
@@ -60,7 +59,9 @@ const EditContent = ({ setAlert, editBookmarkTC, content, _id, }) => {
     );
 };
 
-EditContent.propTypes = {};
+EditContent.propTypes = {
+    setAlert: PropTypes.func,
+};
 EditContent.defaultProps = {};
 
 const mapStateToProps = state => ({

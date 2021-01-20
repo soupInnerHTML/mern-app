@@ -18,7 +18,7 @@ module.exports = {
         "react"
     ],
     rules: {
-        "react/prop-types": "warn",
+        // "react/prop-types": "warn",
         "react/jsx-curly-spacing": [2, {
             "when": "always",
             "children": true,

@@ -31,43 +31,42 @@ export const deleteBookmark = (id) => ({
     id,
 })
 
-export const getBookmarksTC = (request, token, logout) => async dispatch => {
+export const getBookmarksTC = (request) => async (dispatch, getState) => {
     try {
-        const bookmarks = await thinRequest(request, "bookmark", token)
+        const { jwtToken, } = getState().auth
+        const bookmarks = await thinRequest(request, "bookmark", jwtToken)
         dispatch(setBookmarks(bookmarks))
         dispatch(setIsReady(true))
     }
     catch (e) {
-        dispatch( setError(e.message + " !") )
-        dispatch(setIsReady(true))
-        if (e.message === "Нет авторизации") {
-            logout()
-            dispatch(setToken(null))
-        }
+        dispatch( setError(e.message) )
     }
 }
-export const addBookmarkTC = (request, token, payload) => async dispatch => {
+export const addBookmarkTC = (request, payload) => async (dispatch, getState) => {
     try {
-        const bookmark = await thinRequest(request, "bookmark", token, "POST", payload)
+        const { jwtToken, } = getState().auth
+        const bookmark = await thinRequest(request, "bookmark", jwtToken, "POST", payload)
         dispatch(addBookmark(bookmark.message))
     }
     catch (e) {
         dispatch( setError(e.message) )
     }
 }
-export const deleteBookmarkTC = (request, token, id) => async dispatch => {
+export const deleteBookmarkTC = (request, id) => async (dispatch, getState) => {
     try {
-        const bookmark = await thinRequest(request, "bookmark/" + id, token, "DELETE")
+        const { jwtToken, } = getState().auth
+        const bookmark = await thinRequest(request, "bookmark/" + id, jwtToken, "DELETE")
         dispatch(deleteBookmark(id))
     }
     catch (e) {
         dispatch( setError(e.message) )
     }
 }
-export const editBookmarkTC = (request, token, id, payload) => async dispatch => {
+export const editBookmarkTC = (request, id, payload) => async (dispatch, getState) => {
     try {
+        const { jwtToken, } = getState().auth
         dispatch(editBookmark(payload, id))
-        const bookmark = await thinRequest(request, "bookmark/" + id, token, "PUT", payload)
+        const bookmark = await thinRequest(request, "bookmark/" + id, jwtToken, "PUT", payload)
     }
     catch (e) {
         dispatch( setError(e.message) )

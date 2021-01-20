@@ -13,11 +13,11 @@ import { useHttp } from "../../hooks/useHttp";
 const Bookmarks = ({ colors, bookmarks, addBookmarkTC, getBookmarksTC, }) => {
 
     const { request, } = useHttp()
-    const { token, logout, userId, } = useAuth()
+    const { token, userId, } = useAuth()
 
     useEffect(() => {
         if (token) {
-            getBookmarksTC(request, token, logout)
+            getBookmarksTC(request)
         }
     }, [request, token])
 
@@ -40,7 +40,7 @@ const Bookmarks = ({ colors, bookmarks, addBookmarkTC, getBookmarksTC, }) => {
         console.log(body)
 
         // addBookmark(body)
-        addBookmarkTC(request, token, body)
+        addBookmarkTC(request, body)
     }
 
     return (

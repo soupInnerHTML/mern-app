@@ -35,19 +35,15 @@ const initialState = {
     todoToEdit: null,
 }
 
-export const getTodosTC = (request, token, logout) => async dispatch => {
+export const getTodosTC = (request) => async (dispatch, getState) => {
     try {
-        const todos = await thinRequest(request, "todo", token)
-        dispatch(addTodos(todos))
+        const { jwtToken, } = getState().auth
+        const todos = await thinRequest(request, "todo", jwtToken)
+        dispatch(setTodos(todos))
         dispatch(setIsReady(true))
     }
     catch (e) {
-        dispatch( setError(e.message + " !") )
-        dispatch(setIsReady(true))
-        if (e.message === "Нет авторизации") {
-            logout()
-            dispatch(setToken(null))
-        }
+        dispatch( setError(e.message) )
     }
 }
 export const addTodosTC = (request, token, payload) => async dispatch => {

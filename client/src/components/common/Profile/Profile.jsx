@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useAuth } from "../../../hooks/useAuth";
-import { deepOrange, deepPurple, green, pink } from "@material-ui/core/colors";
 import Avatar from "@material-ui/core/Avatar";
 import MenuItem from "@material-ui/core/MenuItem";
 import Divider from "@material-ui/core/Divider";
 import Menu from "@material-ui/core/Menu";
 import { Link } from "react-router-dom";
 import css from "./Profile.module.css"
+import { useDispatch } from "react-redux";
+import { LOGOUT } from "../../../redux/actions";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -23,10 +24,11 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function Profile({ setToken, link, routes, colors, }) {
+export default function Profile({ link, routes, colors, }) {
     const material = useStyles();
     const [anchorEl, setAnchorEl] = useState(null);
-    const { logout, email, avatar, } = useAuth()
+    const { email, avatar, } = useAuth()
+    const dispatch = useDispatch()
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -38,8 +40,7 @@ export default function Profile({ setToken, link, routes, colors, }) {
 
     const exitOnClick = () => {
         handleClose();
-        logout()
-        setToken(null)
+        dispatch({ type: LOGOUT, })
     }
 
     return (
@@ -67,9 +68,6 @@ export default function Profile({ setToken, link, routes, colors, }) {
                 <MenuItem>{ email }</MenuItem>
                 <Divider style={ { opacity: 0.5, } } />
                 <MenuItem onClick={ exitOnClick }>Log out...</MenuItem>
-                <MenuItem>Temp</MenuItem>
-                <MenuItem>Temp</MenuItem>
-                <MenuItem>Temp</MenuItem>
             </Menu>
         </div>
     );
