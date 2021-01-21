@@ -1,7 +1,6 @@
 const { Router } = require('express')
 const Todo = require('../models/Todo')
 const auth = require('../middleware/auth.middleware')
-// const config = require('config')
 const router = Router()
 
 router.post('/', auth, async (req, res) => {
@@ -11,7 +10,7 @@ router.post('/', auth, async (req, res) => {
 
         await todo.save()
 
-        res.status(201).json({ message: todo })
+        res.json(todo)
     }
     catch (e) {
         res.status(500).json({ message: 'Failed to add todo! Please try again' })
@@ -41,11 +40,11 @@ router.get('/:id', auth, async (req, res) => {
 router.delete('/:id', auth, async (req, res) => {
     try {
         const {id} = req.params
-        const todos = await Todo.findOneAndDelete({
+        const todo = await Todo.findOneAndDelete({
             _id: id
         })
 
-        res.json(todos)
+        res.json(todo._id)
     }
     catch (e) {
         res.status(500).json({ message: 'Failed to delete todo! Please, reload page and try again' })
@@ -55,9 +54,9 @@ router.delete('/:id', auth, async (req, res) => {
 router.put('/:id', auth, async (req, res) => {
     try {
         const {params, body} = req
-        let todo = await Todo.findOneAndUpdate({_id: params.id}, body)
+        await Todo.findOneAndUpdate({_id: params.id}, body)
 
-        res.json(todo)
+        res.json(body)
     }
     catch (e) {
         res.status(500).json({ message: 'Failed to edit todo! Please, reload page and try again' })

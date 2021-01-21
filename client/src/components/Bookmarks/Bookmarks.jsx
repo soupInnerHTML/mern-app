@@ -8,18 +8,16 @@ import { addBookmarkTC, getBookmarksTC } from "../../redux/reducers/bookmarksRed
 import sample from "lodash/sample"
 import AddBtn from "../Common/AddBtn";
 import { useAuth } from "../../hooks/useAuth";
-import { useHttp } from "../../hooks/useHttp";
 
 const Bookmarks = ({ colors, bookmarks, addBookmarkTC, getBookmarksTC, }) => {
 
-    const { request, } = useHttp()
     const { token, userId, } = useAuth()
 
     useEffect(() => {
         if (token) {
-            getBookmarksTC(request)
+            getBookmarksTC()
         }
-    }, [request, token])
+    }, [token])
 
     const addHandler = () => {
         const WIDTH = window.innerWidth
@@ -39,8 +37,7 @@ const Bookmarks = ({ colors, bookmarks, addBookmarkTC, getBookmarksTC, }) => {
 
         console.log(body)
 
-        // addBookmark(body)
-        addBookmarkTC(request, body)
+        addBookmarkTC(body)
     }
 
     return (

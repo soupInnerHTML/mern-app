@@ -9,15 +9,22 @@ import { clearError, setError } from "./redux/reducers/errorReducer";
 import { setIsReady, setToken } from "./redux/reducers/authReducer";
 import Error from "./components/Common/Error";
 import Loader from "./components/Common/Loader/Loader";
+import { setRequest } from "./redux/reducers/routesReducer";
+import { useHttp } from "./hooks/useHttp";
 
-function App({ error, clearError, isReady, globalToken, setToken, routes, }) {
+function App({ error, clearError, isReady, globalToken, setToken, routes, setRequest, }) {
     const { token, } = useAuth()
+    const { request, } = useHttp()
 
     useEffect(() => {
         if (globalToken !== null) {
             setToken(token)
         }
     }, [token])
+
+    useEffect(() => {
+        setRequest(request)
+    }, [request])
 
     const routesTree = useRoutes(globalToken, routes);
 
@@ -38,7 +45,7 @@ let mapStateToProps = state => ({
 })
 
 let mapDispatchToProps = {
-    setError, clearError, setToken, setIsReady,
+    setError, clearError, setToken, setIsReady, setRequest,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

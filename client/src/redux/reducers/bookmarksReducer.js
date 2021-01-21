@@ -1,6 +1,6 @@
-import { thinRequest } from "../../utils/utils";
-import { setIsReady, setToken } from "./authReducer";
+import { thinRequest } from "../../utils/redux.utils";
 import { setError } from "./errorReducer";
+import { setThunk } from "../actions";
 
 export const DELETE_TAG = "bookmarksReducer/deleteTag"
 export const EDIT_BOOKMARK = "bookmarksReducer/editBookmark"
@@ -31,42 +31,21 @@ export const deleteBookmark = (id) => ({
     id,
 })
 
-export const getBookmarksTC = (request) => async (dispatch, getState) => {
-    try {
-        const { jwtToken, } = getState().auth
-        const bookmarks = await thinRequest(request, "bookmark", jwtToken)
-        dispatch(setBookmarks(bookmarks))
-        dispatch(setIsReady(true))
-    }
-    catch (e) {
-        dispatch( setError(e.message) )
-    }
+const ENTITY = "bookmark"
+
+export const getBookmarksTC = () => dispatch => {
+    dispatch(setThunk(ENTITY, setBookmarks))
 }
-export const addBookmarkTC = (request, payload) => async (dispatch, getState) => {
-    try {
-        const { jwtToken, } = getState().auth
-        const bookmark = await thinRequest(request, "bookmark", jwtToken, "POST", payload)
-        dispatch(addBookmark(bookmark.message))
-    }
-    catch (e) {
-        dispatch( setError(e.message) )
-    }
+export const addBookmarkTC = payload => dispatch => {
+    dispatch(setThunk(ENTITY, addBookmark, "POST", payload))
 }
-export const deleteBookmarkTC = (request, id) => async (dispatch, getState) => {
-    try {
-        const { jwtToken, } = getState().auth
-        const bookmark = await thinRequest(request, "bookmark/" + id, jwtToken, "DELETE")
-        dispatch(deleteBookmark(id))
-    }
-    catch (e) {
-        dispatch( setError(e.message) )
-    }
+export const deleteBookmarkTC = id => dispatch => {
+    dispatch(setThunk(`${ENTITY}/${id}`, deleteBookmark, "DELETE"))
 }
-export const editBookmarkTC = (request, id, payload) => async (dispatch, getState) => {
+export const editBookmarkTC = (id, payload) => async (dispatch, getState) => {
     try {
-        const { jwtToken, } = getState().auth
         dispatch(editBookmark(payload, id))
-        const bookmark = await thinRequest(request, "bookmark/" + id, jwtToken, "PUT", payload)
+        const bookmark = await thinRequest(getState(), `${ENTITY}/${id}`, "PUT", payload)
     }
     catch (e) {
         dispatch( setError(e.message) )

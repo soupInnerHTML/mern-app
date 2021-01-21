@@ -8,24 +8,22 @@ import BookmarkTagsContainer from "./Tags/BookmarkTagsContainer";
 import EditContent from "./Edit/EditContent";
 import { connect } from "react-redux";
 import { deleteBookmarkTC, editBookmarkTC } from "../../redux/reducers/bookmarksReducer";
-import { useHttp } from "../../hooks/useHttp";
 
 const Bookmark = ({ colors, pos, color, content, tags, _id, deleteBookmarkTC, editBookmarkTC, }) => {
 
     const [isClose, setClose] = useState(false)
-    const { request, } = useHttp()
     const nodeRef = React.useRef(null);
 
     const close = () => {
         setClose(true)
-        setTimeout(() => deleteBookmarkTC(request, _id), 800)
+        setTimeout(() => deleteBookmarkTC(_id), 800)
     }
 
     const setPosOnStop = (e, data) => {
         // console.log("Event: ", e);
         // console.log("Data: ", data);
 
-        editBookmarkTC(request, _id, { pos: {
+        editBookmarkTC(_id, { pos: {
             x: data.lastX,
             y: data.lastY, },
         }, _id)
@@ -38,7 +36,7 @@ const Bookmark = ({ colors, pos, color, content, tags, _id, deleteBookmarkTC, ed
 
                     <Icon className={ css.close } onClick={ close }>close</Icon>
 
-                    <div className={ css.handle } id={ "handle" }></div>
+                    <div className={ css.handle } id={ "handle" }/>
 
                     <EditContent { ...{ content, _id, } }/>
 

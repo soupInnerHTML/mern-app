@@ -1,6 +1,9 @@
 import React from "react"
+import FormAddTodo from "./FormAddTodo";
 import { Dialog, makeStyles, Slide } from "@material-ui/core"
-import FormAddTodoContainer from "./FormAddTodoContainer";
+import { setOpenModal } from "../../../redux/reducers/todosReducer";
+import { connect } from "react-redux";
+import { getModalOpen } from "../../../redux/selectors";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -33,22 +36,32 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
   
 
-export default function ModalAddTodo({ isOpenModal, setOpenModal, action, }) {
+const ModalAddTodo = ({ isModalOpen, setOpenModal, action, }) => {
     const classes = useStyles()
-    const handleClose = () => setOpenModal(false)
     
     return (
-        <>
-            <Dialog
-                open={ isOpenModal }
-                className={ classes.modal }
-                onClose={ handleClose }
-                TransitionComponent={ Transition }
-            >
-                <div className={ classes.paper }>
-                    <FormAddTodoContainer { ...{ handleClose, action, } }/>
-                </div>
-            </Dialog>
-        </>
+        <Dialog
+            open={ isModalOpen }
+            className={ classes.modal }
+            onClose={ () => setOpenModal(false) }
+            TransitionComponent={ Transition }
+            keepMounted
+        >
+            <div className={ classes.paper }>
+                <FormAddTodo { ...{ action, } }/>
+            </div>
+        </Dialog>
     )
 }
+
+const mapStateToProps = state => ({
+    isModalOpen: getModalOpen(state),
+})
+
+
+const mapDispatchToProps = {
+    setOpenModal,
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(ModalAddTodo)

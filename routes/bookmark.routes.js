@@ -21,7 +21,7 @@ router.post('/', auth, async (req, res) => {
 
         await bookmark.save()
 
-        res.status(201).json({ message: bookmark })
+        res.json(bookmark)
     }
     catch (e) {
         res.status(500).json({ message: 'Failed to add bookmark! Please try again' })
@@ -35,7 +35,7 @@ router.delete('/:id', auth, async (req, res) => {
             _id: id
         })
 
-        res.json(bookmark)
+        res.json(bookmark._id)
     }
     catch (e) {
         res.status(500).json({ message: 'Failed to delete bookmark! Please, reload page and try again' })
@@ -45,9 +45,9 @@ router.delete('/:id', auth, async (req, res) => {
 router.put('/:id', auth, async (req, res) => {
     try {
         const {params, body} = req
-        let bookmark = await Bookmark.findOneAndUpdate({_id: params.id}, body)
+        await Bookmark.findOneAndUpdate({_id: params.id}, body)
 
-        res.json(bookmark)
+        res.json(body)
     }
     catch (e) {
         res.status(500).json({ message: 'Failed to edit bookmark! Please, reload page and try again' })

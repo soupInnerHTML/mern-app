@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
@@ -10,14 +10,21 @@ import { format } from "date-fns"
 import { useHttp } from "../../../hooks/useHttp";
 import { toCapitalize } from "../../../utils/utils";
 import { useAuth } from "../../../hooks/useAuth";
+import { connect } from "react-redux";
+import { getCurrentTodo, getIcons, getThemes } from "../../../redux/selectors";
+import { addTodosTC, editTodoTC, setCurrentTodo, setOpenModal } from "../../../redux/reducers/todosReducer";
 
-export default function FormAddTodo({ handleClose, action, addTodosTC, editTodoTC, todoToEdit, setTodoToEdit, icons, themes, }) {
+const FormAddTodo = ({ action, addTodosTC, editTodoTC, currentTodo, icons, themes, setCurrentTodo, setOpenModal, }) => {
     const [variant, setVariant] = useState(false)
-    const iconsKeys = Object.keys(icons)
     const [submit, setSubmit] = useState(false)
-    const { request, loading, } = useHttp()
+    const iconsKeys = Object.keys(icons)
+    const { loading, } = useHttp()
 
-    let initialState = action === "edit" ? todoToEdit : {
+    useEffect(() => {
+        console.log(loading)
+    }, [loading])
+
+    let initialState = currentTodo || {
         label: "",
         icon: iconsKeys[0],
         desc: "",
@@ -27,28 +34,32 @@ export default function FormAddTodo({ handleClose, action, addTodosTC, editTodoT
 
     const [todoData, changeHandler] = useFormChange(initialState)
 
-    const { userId, token, } = useAuth()
+    const { userId, } = useAuth()
 
     const submitHandler = async (e) => {
         e.preventDefault()
-        setTodoToEdit(null)
+        setCurrentTodo(null)
         setSubmit(true)
 
         if (todoData.desc && todoData.label) {
-            try {
-                setSubmit(false)
+            setSubmit(false)
 
-                if (action === "add") {
-                    let response = await addTodosTC(request, token, { ...todoData, owner: userId, })
-                }
-                if (action === "edit") {
-                    let response = await editTodoTC(request, token, todoToEdit._id, { ...todoData, owner: userId, })
-                }
-                handleClose()
-
+            switch (action) {
+                case "add":
+                    addTodosTC({ ...todoData, owner: userId, })
+                    break
+                case "edit":
+                    editTodoTC(currentTodo._id, { ...todoData, owner: userId, })
+                    break
+                case "copy":
+                    const { label, icon, desc, theme, } = todoData
+                    addTodosTC({
+                        label, icon, desc, theme,
+                        time: format(new Date(), "p").toLowerCase(),
+                        owner: userId,
+                    })
+                    break
             }
-            catch (e) {}
-
         }
     }
 
@@ -139,7 +150,7 @@ export default function FormAddTodo({ handleClose, action, addTodosTC, editTodoT
                         { action }
                     </Button>
                     
-                    <Button onClick={ handleClose }>
+                    <Button onClick={ () => setOpenModal(false) }>
                         Cancel
                     </Button>
                 </Grid>
@@ -148,3 +159,15 @@ export default function FormAddTodo({ handleClose, action, addTodosTC, editTodoT
         </form>
     )
 }
+
+let mapStateToProps = state => ({
+    currentTodo: getCurrentTodo(state),
+    icons: getIcons(state),
+    themes: getThemes(state),
+})
+
+let mapDispatchToProps = {
+    addTodosTC, editTodoTC, setCurrentTodo, setOpenModal,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(FormAddTodo)

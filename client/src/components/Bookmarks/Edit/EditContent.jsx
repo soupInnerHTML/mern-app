@@ -4,7 +4,6 @@ import { TextareaAutosize } from "@material-ui/core";
 import { connect } from "react-redux";
 import { setAlert } from "../../../redux/reducers/errorReducer";
 import { editBookmarkTC } from "../../../redux/reducers/bookmarksReducer";
-import { useHttp } from "../../../hooks/useHttp";
 import css from "./EditContent.module.css"
 import cs from "classnames"
 
@@ -13,15 +12,13 @@ const EditContent = ({ setAlert, editBookmarkTC, content, _id, }) => {
     let [editValue, setEditValue] = useState(content)
     let [pulse, setPulse] = useState(false)
 
-    const { request, } = useHttp()
-
     const handleEdit = e => {
         setEditValue(e.target.value)
     }
 
     const saveEdit = e => {
         setEdit(false)
-        editBookmarkTC(request, _id, { content: editValue.trim() || "Напишите что-нибудь...", }, _id)
+        editBookmarkTC( _id, { content: editValue.trim() || "Напишите что-нибудь...", }, _id)
     }
 
     const copyContent = (e) => {

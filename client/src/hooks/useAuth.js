@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react"
-import { clearStroage } from "../utils/utils";
+import { clearStroage } from "../utils/redux.utils";
 
 export const useAuth = () => {
     let [token, setToken] = useState(false)

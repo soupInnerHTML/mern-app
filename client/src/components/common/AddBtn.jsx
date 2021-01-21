@@ -10,7 +10,7 @@ const AddBtn = (props) => {
             style={ {
                 right: 24,
                 bottom: 16,
-                position: "absolute",
+                position: "fixed",
             } }
         >
             <Icon>add</Icon>

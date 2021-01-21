@@ -10,7 +10,7 @@ function SlideTransition(props) {
 function Error({ error, clearError, }) {
 
     useEffect(() => {
-        console.log(error)
+        // console.log(error)
     }, [error])
 
     

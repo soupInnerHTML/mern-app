@@ -2,39 +2,30 @@
   padding: 6px 16px;
 }
 
-.icon {
-  position: absolute !important;
+.iconHandle {
   cursor: pointer;
 }
 
-.deleteFromLeft {
-  bottom: 80px !important;
-  right: 24px !important;
+.todo .handlers {
+  position: absolute;
+  left: 17px;
+  right: 17px;
+  top: -40px;
+  display: flex;
+}
+.todo .actions {
+  display: flex;
+  gap: 5px;
+}
+.todo:nth-of-type(even) .handlers {
+  justify-content: flex-end;
 }
 
-.deleteFromRight {
-  bottom: 80px !important;
-  left: 24px !important;
-}
-
-.updateFromLeft {
-  bottom: 80px !important;
-  right: 72px !important;
-}
-
-.updateFromRight {
-  bottom: 80px !important;
-  left: 72px !important;
-}
-
-.moreFromLeft {
-  bottom: 30px !important;
-  right: 24px !important;
-}
-
-.moreFromRight {
-  bottom: 30px !important;
-  left: 24px !important;
+.more {
+  position: absolute;
+  top: 68px;
+  margin: 0px 7px;
+  z-index: 6;
 }
 
 /*# sourceMappingURL=Todo.module.css.map */

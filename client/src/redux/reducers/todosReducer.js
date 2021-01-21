@@ -1,91 +1,78 @@
-import { thinRequest } from "../../utils/utils";
-import { setError } from "./errorReducer";
-import { setIsReady, setToken } from "./authReducer";
+import { setThunk } from "../actions";
 
 const SET_TODOS = "todoReducer/setTodos"
-const ADD_TODOS = "todoReducer/addTodos"
+export const ADD_TODO = "todoReducer/addTodo"
 const DELETE_TODO = "todoReducer/deleteTodo"
-const EDIT_TODO = "todoReducer/editTodo"
-const SET_TODO_TO_EDIT = "todoReducer/setTodoToEdit"
+export const EDIT_TODO = "todoReducer/editTodo"
+const SET_CURRENT_TODO = "todoReducer/setCurrentTodo"
+const SET_OPEN_MODAL = "todoReducer/setOpenModal"
 
 export const setTodos = todos => ({
     type: SET_TODOS,
     todos,
 })
-export const addTodos = todos => ({
-    type: ADD_TODOS,
-    todos,
+export const addTodo = todo => ({
+    type: ADD_TODO,
+    todo,
 })
 export const deleteTodo = id => ({
     type: DELETE_TODO,
     id,
 })
-export const editTodo = (id, body) => ({
+export const editTodo = todo => ({
     type: EDIT_TODO,
-    id,
-    body,
-})
-export const setTodoToEdit = todo => ({
-    type: SET_TODO_TO_EDIT,
     todo,
+})
+export const setCurrentTodo = todo => ({
+    type: SET_CURRENT_TODO,
+    todo,
+})
+export const setOpenModal = flag => ({
+    type: SET_OPEN_MODAL,
+    flag,
 })
 
 const initialState = {
     todosData: [],
-    todoToEdit: null,
+    currentTodo: null,
+    isModalOpen: false,
 }
 
-export const getTodosTC = (request) => async (dispatch, getState) => {
-    try {
-        const { jwtToken, } = getState().auth
-        const todos = await thinRequest(request, "todo", jwtToken)
-        dispatch(setTodos(todos))
-        dispatch(setIsReady(true))
-    }
-    catch (e) {
-        dispatch( setError(e.message) )
-    }
+const ENTITY = "todo"
+
+export const getTodosTC = () => dispatch => {
+    dispatch(setThunk(ENTITY, setTodos))
 }
-export const addTodosTC = (request, token, payload) => async dispatch => {
-    try {
-        const todos = await thinRequest(request, "todo", token, "POST", payload)
-        dispatch(addTodos([todos.message]))
-    }
-    catch (e) {
-        dispatch( setError(e.message) )
-    }
+export const addTodosTC = payload => dispatch => {
+    dispatch(setThunk(ENTITY, addTodo, "POST", payload))
 }
-export const deleteTodoTC = (request, token, id) => async dispatch => {
-    try {
-        const todos = await thinRequest(request, "todo/" + id, token, "DELETE")
-        dispatch(deleteTodo(id))
-    }
-    catch (e) {
-        dispatch( setError(e.message) )
-    }
+export const deleteTodoTC = (id) => dispatch => {
+    dispatch(setThunk(`${ENTITY}/${id}`, deleteTodo, "DELETE"))
 }
-export const editTodoTC = (request, token, id, payload) => async dispatch => {
-    try {
-        const todos = await thinRequest(request, "todo/" + id, token, "PUT", payload)
-        dispatch(editTodo(id, payload))
-    }
-    catch (e) {
-        dispatch( setError(e.message) )
-    }
+export const editTodoTC = (id, payload) => dispatch => {
+    dispatch(setThunk(`${ENTITY}/${id}`, editTodo, "PUT", payload))
 }
 
 const todosReducer = (state = initialState, action) => {
     switch (action.type) {
         case SET_TODOS:
             return { ...state, todosData: action.todos, }
-        case ADD_TODOS:
-            return { ...state, todosData: [...state.todosData, ...action.todos], }
+        case ADD_TODO:
+            return { ...state, todosData: [...state.todosData, action.todo], }
         case DELETE_TODO:
-            return { ...state, todosData: state.todosData.filter(todoToDelete => todoToDelete._id !== action.id ), }
+            return {
+                ...state,
+                todosData: state.todosData.filter(todoToDelete => todoToDelete._id !== action.id ),
+            }
         case EDIT_TODO:
-            return { ...state, todosData: state.todosData.map(todo => todo._id === action.id ? action.body : todo ), }
-        case SET_TODO_TO_EDIT:
-            return { ...state, todoToEdit: action.todo, }
+            return {
+                ...state,
+                todosData: state.todosData.map(todo => todo._id === action.todo._id ? action.todo : todo ),
+            }
+        case SET_CURRENT_TODO:
+            return { ...state, currentTodo: action.todo, }
+        case SET_OPEN_MODAL:
+            return { ...state, isModalOpen: action.flag, }
         default:
             return state
     }
